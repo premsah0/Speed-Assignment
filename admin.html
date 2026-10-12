@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Speed Assignment - Admin Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="noindex, nofollow" name="robots">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --admin-navy: #081E36;
+            --admin-emerald: #00B98E;
+            --admin-emerald-hover: #009673;
+            --admin-bg: #F4F6F9;
+            --admin-card-bg: #FFFFFF;
+            --admin-border: rgba(14, 46, 80, 0.12);
+            --admin-text-dark: #081E36;
+            --admin-text-muted: #6C757D;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--admin-bg);
+            color: var(--admin-text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 250px;
+            background-color: var(--admin-navy);
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .admin-sidebar-header {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-sidebar-brand {
+            color: #FFFFFF;
+            font-weight: 800;
+            font-size: 1.25rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-sidebar-brand img {
+            height: 36px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .admin-sidebar-nav {
+            padding: 1rem 0;
+            list-style: none;
+            margin: 0;
+        }
+
+        .admin-sidebar-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .admin-sidebar-link:hover,
+        .admin-sidebar-link.active {
+            color: #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left-color: var(--admin-emerald);
+        }
+
+        .admin-sidebar-footer {
+            padding: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-user-info {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.75rem;
+            word-break: break-all;
+        }
+
+        .admin-user-info strong {
+            color: #FFFFFF;
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        .admin-logout-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            border: none;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border-radius: 2px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .admin-logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.8);
+            color: #FFFFFF;
+        }
+
+        /* Main Content */
+        .admin-main {
+            margin-left: 250px;
+            flex-grow: 1;
+            padding: 2rem;
+            min-width: 0;
+        }
+
+        .admin-header {
+            margin-bottom: 2rem;
+        }
+
+        .admin-page-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--admin-navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-page-subtitle {
+            color: var(--admin-text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        /* Summary Cards */
+        .admin-stat-card {
+            background: var(--admin-card-bg);
+            border: 1px solid var(--admin-border);
+            border-radius: 2px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            height: 100%;
+        }
+
+        .admin-stat-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--admin-text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-stat-value {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--admin-navy);
+            margin-bottom: 0;
+            line-height: 1;
+        }
+
+        .admin-stat-card.stat-pending .admin-stat-value { color: #fd7e14; }
+        .admin-stat-card.stat-progress .admin-stat-value { color: #0d6efd; }
+        .admin-stat-card.stat-completed .admin-stat-value { color: #198754; }
+
+        /* Section Container */
+        .admin-section-card {
+            background: var(--admin-card-bg);
+            border: 1px solid var(--admin-border);
+            border-radius: 2px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            margin-bottom: 2rem;
+        }
+
+        .admin-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--admin-navy);
+            margin: 0;
+        }
+
+        /* Table */
+        .admin-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .admin-table th {
+            background-color: #F8F9FA;
+            color: var(--admin-navy);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 0.85rem 1rem;
+            border-bottom: 2px solid var(--admin-border);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .admin-table td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--admin-border);
+            vertical-align: top;
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: rgba(0, 185, 142, 0.02);
+        }
+
+        .admin-req-name {
+            font-weight: 700;
+            color: var(--admin-navy);
+            display: block;
+        }
+
+        .admin-req-email {
+            color: var(--admin-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .admin-req-phone {
+            color: var(--admin-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .admin-req-service {
+            font-weight: 600;
+            color: var(--admin-navy);
+        }
+
+        .admin-req-desc {
+            max-width: 300px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 0.825rem;
+            color: #495057;
+        }
+
+        /* Status Dropdown */
+        .admin-status-select {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 2px;
+            border: 1px solid var(--admin-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .admin-status-select.status-PENDING {
+            background-color: #fff3cd;
+            color: #664d03;
+            border-color: #ffe69c;
+        }
+
+        .admin-status-select.status-IN_PROGRESS {
+            background-color: #cfe2ff;
+            color: #084298;
+            border-color: #b6d4fe;
+        }
+
+        .admin-status-select.status-COMPLETED {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border-color: #badbcc;
+        }
+
+        .admin-status-select.status-CANCELLED {
+            background-color: #f8d7da;
+            color: #842029;
+            border-color: #f5c2c7;
+        }
+
+        /* Pagination */
+        .admin-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--admin-border);
+        }
+
+        .admin-page-btn {
+            background-color: #FFFFFF;
+            border: 1px solid var(--admin-border);
+            color: var(--admin-navy);
+            padding: 0.4rem 0.85rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .admin-page-btn:hover:not(:disabled) {
+            background-color: var(--admin-navy);
+            color: #FFFFFF;
+        }
+
+        .admin-page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .admin-wrapper {
+                flex-direction: column;
+            }
+
+            .admin-main {
+                margin-left: 0;
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div>
+                <div class="admin-sidebar-header">
+                    <a href="admin.html" class="admin-sidebar-brand">
+                        <img src="img/logo.png" alt="Speed Assignment" style="height: 36px; width: auto; max-width: 100%;">
+                    </a>
+                </div>
+                <ul class="admin-sidebar-nav">
+                    <li class="admin-sidebar-item">
+                        <a href="admin.html" class="admin-sidebar-link active">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar-item">
+                        <a href="#requests-section" class="admin-sidebar-link">
+                            <i class="bi bi-inbox-fill"></i>
+                            <span>Contact Requests</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar-item">
+                        <a href="#services-section" class="admin-sidebar-link">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                            <span>Services</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar-item">
+                        <a href="#reviews-section" class="admin-sidebar-link">
+                            <i class="bi bi-star-fill"></i>
+                            <span>Reviews</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar-item">
+                        <a href="#settings-section" class="admin-sidebar-link">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Website Settings</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar-item">
+                        <a href="#chatbot-section" class="admin-sidebar-link">
+                            <i class="bi bi-robot"></i>
+                            <span>Chatbot Config</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="admin-sidebar-footer">
+                <div class="admin-user-info">
+                    Logged in as:
+                    <strong id="admin-user-email">admin@speedassignment.com</strong>
+                </div>
+                <button class="admin-logout-btn" id="admin-logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Header Section -->
+            <header class="admin-header">
+                <h1 class="admin-page-title">Dashboard</h1>
+                <p class="admin-page-subtitle" id="admin-welcome-msg">Welcome to the Speed Assignment Internal Management Portal.</p>
+            </header>
+
+            <!-- Real Summary Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-label">Total Requests</div>
+                        <div class="admin-stat-value" id="stat-total-count">-</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="admin-stat-card stat-pending">
+                        <div class="admin-stat-label">Pending</div>
+                        <div class="admin-stat-value" id="stat-pending-count">-</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="admin-stat-card stat-progress">
+                        <div class="admin-stat-label">In Progress</div>
+                        <div class="admin-stat-value" id="stat-progress-count">-</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="admin-stat-card stat-completed">
+                        <div class="admin-stat-label">Completed</div>
+                        <div class="admin-stat-value" id="stat-completed-count">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast / Action Feedback Container -->
+            <div id="admin-toast-container" class="mb-3" style="display: none;"></div>
+
+            <!-- Contact Requests Section -->
+            <section class="admin-section-card" id="requests-section">
+                <div class="admin-section-header">
+                    <h2 class="admin-section-title">
+                        <i class="bi bi-chat-left-text me-2" style="color: var(--admin-emerald);"></i>Contact Requests
+                    </h2>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="filter-status" class="form-label mb-0 small fw-bold" style="white-space: nowrap;">Status Filter:</label>
+                        <select id="filter-status" class="form-select form-select-sm" style="width: auto; min-width: 150px; border-radius: 2px;">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Table Area -->
+                <div class="admin-table-wrapper">
+                    <div id="admin-table-loading" class="text-center py-5">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted small mb-0">Fetching contact requests from database...</p>
+                    </div>
+
+                    <div id="admin-table-error" class="alert alert-danger py-3 px-4 mb-0" style="display: none; border-radius: 2px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="admin-error-text">Failed to connect to the backend server.</span>
+                            <button class="btn btn-sm btn-outline-danger" id="admin-retry-btn">Retry</button>
+                        </div>
+                    </div>
+
+                    <div id="admin-table-empty" class="text-center py-5 text-muted" style="display: none;">
+                        <i class="bi bi-inbox display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-0 fw-semibold">No contact requests found matching criteria.</p>
+                    </div>
+
+                    <table class="admin-table" id="admin-requests-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Student / Client</th>
+                                <th>Contact Details</th>
+                                <th>Service Needed</th>
+                                <th>Requirements / Message</th>
+                                <th>Submitted Date</th>
+                                <th>Status Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-requests-tbody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Footer -->
+                <div class="admin-pagination" id="admin-pagination-container" style="display: none;">
+                    <span class="text-muted small" id="admin-pagination-info">Showing 0-0 of 0</span>
+                    <div class="d-flex gap-2">
+                        <button class="admin-page-btn" id="btn-prev-page" disabled>&larr; Previous</button>
+                        <button class="admin-page-btn" id="btn-next-page" disabled>Next &rarr;</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section class="admin-section-card" id="services-section">
+                <div class="admin-section-header">
+                    <h2 class="admin-section-title">
+                        <i class="bi bi-journal-bookmark-fill me-2" style="color: var(--admin-emerald);"></i>Academic Services Management
+                    </h2>
+                    <button class="btn btn-sm text-white" id="btn-open-add-service-modal" style="background-color: var(--admin-emerald); font-weight: 600; border-radius: 2px;">
+                        <i class="bi bi-plus-lg me-1"></i>Add New Service
+                    </button>
+                </div>
+
+                <!-- Table Area -->
+                <div class="admin-table-wrapper">
+                    <div id="admin-services-loading" class="text-center py-5">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted small mb-0">Fetching services from database...</p>
+                    </div>
+
+                    <div id="admin-services-error" class="alert alert-danger py-3 px-4 mb-0" style="display: none; border-radius: 2px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="admin-services-error-text">Failed to fetch services.</span>
+                            <button class="btn btn-sm btn-outline-danger" id="admin-services-retry-btn">Retry</button>
+                        </div>
+                    </div>
+
+                    <div id="admin-services-empty" class="text-center py-5 text-muted" style="display: none;">
+                        <i class="bi bi-journal-x display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-0 fw-semibold">No services found in database.</p>
+                    </div>
+
+                    <table class="admin-table" id="admin-services-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Service Title</th>
+                                <th>Slug</th>
+                                <th>Description</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-services-tbody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section class="admin-section-card" id="reviews-section">
+                <div class="admin-section-header">
+                    <h2 class="admin-section-title">
+                        <i class="bi bi-star-fill me-2" style="color: var(--admin-emerald);"></i>Student Reviews Management
+                    </h2>
+                    <button class="btn btn-sm text-white" id="btn-open-add-review-modal" style="background-color: var(--admin-emerald); font-weight: 600; border-radius: 2px;">
+                        <i class="bi bi-plus-lg me-1"></i>Add New Review
+                    </button>
+                </div>
+
+                <!-- Table Area -->
+                <div class="admin-table-wrapper">
+                    <div id="admin-reviews-loading" class="text-center py-5">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted small mb-0">Fetching reviews from database...</p>
+                    </div>
+
+                    <div id="admin-reviews-error" class="alert alert-danger py-3 px-4 mb-0" style="display: none; border-radius: 2px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="admin-reviews-error-text">Failed to fetch reviews.</span>
+                            <button class="btn btn-sm btn-outline-danger" id="admin-reviews-retry-btn">Retry</button>
+                        </div>
+                    </div>
+
+                    <div id="admin-reviews-empty" class="text-center py-5 text-muted" style="display: none;">
+                        <i class="bi bi-star display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-0 fw-semibold">No reviews found in database.</p>
+                    </div>
+
+                    <table class="admin-table" id="admin-reviews-table" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Role</th>
+                                <th>Review Content</th>
+                                <th>Avatar</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-reviews-tbody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Website Settings Section -->
+            <section class="admin-section-card" id="settings-section">
+                <div class="admin-section-header">
+                    <h2 class="admin-section-title">
+                        <i class="bi bi-sliders me-2" style="color: var(--admin-emerald);"></i>Website Settings
+                    </h2>
+                </div>
+
+                <div id="admin-settings-loading" class="text-center py-4">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading settings...</span>
+                    </div>
+                    <p class="mt-2 text-muted small mb-0">Loading configuration settings...</p>
+                </div>
+
+                <div id="admin-settings-error" class="alert alert-danger py-3 px-4 mb-3" style="display: none; border-radius: 2px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span id="admin-settings-error-text">Failed to fetch website settings.</span>
+                        <button class="btn btn-sm btn-outline-danger" id="admin-settings-retry-btn">Retry</button>
+                    </div>
+                </div>
+
+                <form id="settings-form" style="display: none;">
+                    <div class="row g-4">
+                        <!-- Contact Information -->
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-telephone-inbound me-2 text-primary"></i>Contact Information</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="setting-whatsapp" class="form-label fw-bold small text-muted">WhatsApp / Phone Number</label>
+                                    <input type="text" class="form-control form-control-sm" id="setting-whatsapp" required placeholder="+9779800000000" style="border-radius: 2px;">
+                                    <div class="form-text" style="font-size: 0.75rem;">Used for student instant contact links.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="setting-email" class="form-label fw-bold small text-muted">Contact Email Address</label>
+                                    <input type="email" class="form-control form-control-sm" id="setting-email" required placeholder="info@speedassignment.com" style="border-radius: 2px;">
+                                    <div class="form-text" style="font-size: 0.75rem;">Public support and contact email.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="setting-address" class="form-label fw-bold small text-muted">Physical Location / Address</label>
+                                    <input type="text" class="form-control form-control-sm" id="setting-address" required placeholder="Kathmandu, Nepal" style="border-radius: 2px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location Coordinates -->
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-geo-alt me-2 text-danger"></i>Location Coordinates</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="setting-latitude" class="form-label fw-bold small text-muted">Map Latitude</label>
+                                    <input type="number" step="any" class="form-control form-control-sm" id="setting-latitude" required placeholder="27.7172" style="border-radius: 2px;">
+                                    <div class="form-text" style="font-size: 0.75rem;">Latitude coordinate for map widgets.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="setting-longitude" class="form-label fw-bold small text-muted">Map Longitude</label>
+                                    <input type="number" step="any" class="form-control form-control-sm" id="setting-longitude" required placeholder="85.3240" style="border-radius: 2px;">
+                                    <div class="form-text" style="font-size: 0.75rem;">Longitude coordinate for map widgets.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end">
+                        <button type="submit" class="btn text-white px-4" id="btn-save-settings" style="background-color: var(--admin-emerald); font-weight: 700; border-radius: 2px;">
+                            <i class="bi bi-check2-circle me-1"></i>Save Website Settings
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Chatbot Configuration Section -->
+            <section class="admin-section-card" id="chatbot-section">
+                <div class="admin-section-header">
+                    <h2 class="admin-section-title">
+                        <i class="bi bi-robot me-2" style="color: var(--admin-emerald);"></i>AI Chatbot Management (Gemini Integration)
+                    </h2>
+                    <button type="button" class="btn btn-sm btn-outline-danger" id="btn-reset-chatbot-config" style="border-radius: 2px;">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Defaults
+                    </button>
+                </div>
+
+                <div id="admin-chatbot-loading" class="text-center py-4">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading chatbot config...</span>
+                    </div>
+                    <p class="mt-2 text-muted small mb-0">Loading AI Assistant configuration...</p>
+                </div>
+
+                <div id="admin-chatbot-error" class="alert alert-danger py-3 px-4 mb-3" style="display: none; border-radius: 2px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span id="admin-chatbot-error-text">Failed to fetch chatbot configuration.</span>
+                        <button class="btn btn-sm btn-outline-danger" id="admin-chatbot-retry-btn">Retry</button>
+                    </div>
+                </div>
+
+                <form id="chatbot-config-form" style="display: none;">
+                    <div class="row g-4">
+                        <!-- Left Column: Status & Model Settings -->
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-cpu me-2 text-primary"></i>Model & State Configuration</h6>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="chatbot-is-enabled" checked>
+                                    <label class="form-check-label fw-bold small text-muted" for="chatbot-is-enabled">Enable AI Chatbot Assistant</label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="chatbot-model" class="form-label fw-bold small text-muted">Gemini Model</label>
+                                    <select class="form-select form-select-sm" id="chatbot-model" style="border-radius: 2px;">
+                                        <option value="gemini-3.5-flash" selected>gemini-3.5-flash (Recommended & Default)</option>
+                                        <option value="gemini-3.8-flash">gemini-3.8-flash</option>
+                                    </select>
+                                    <div class="form-text" style="font-size: 0.75rem;">Selected Google Gemini model for text inference.</div>
+                                </div>
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label for="chatbot-temperature" class="form-label fw-bold small text-muted">Temperature (0.0 - 1.0)</label>
+                                        <input type="number" step="0.1" min="0" max="1" class="form-control form-control-sm" id="chatbot-temperature" value="0.7" style="border-radius: 2px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="chatbot-max-tokens" class="form-label fw-bold small text-muted">Max Response Tokens</label>
+                                        <input type="number" step="50" min="100" max="4000" class="form-control form-control-sm" id="chatbot-max-tokens" value="400" style="border-radius: 2px;">
+                                    </div>
+                                </div>
+
+                                <div class="p-2 bg-white rounded border">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-shield-lock-fill text-success fs-5"></i>
+                                        <div>
+                                            <strong class="d-block text-dark small">API Key Security</strong>
+                                            <span class="text-muted extra-small" style="font-size: 0.75rem;">Your <code>GEMINI_API_KEY</code> is kept strictly in <code>backend/.env</code> and never exposed to client browsers.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: System Prompt & Welcome Message -->
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded border h-100">
+                                <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-chat-quote me-2 text-success"></i>System Persona & Welcome Greeting</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="chatbot-welcome-message" class="form-label fw-bold small text-muted">Welcome Message</label>
+                                    <textarea class="form-control form-control-sm" id="chatbot-welcome-message" rows="2" required style="border-radius: 2px;"></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="chatbot-system-prompt" class="form-label fw-bold small text-muted">System Persona / Instructions Prompt</label>
+                                    <textarea class="form-control form-control-sm" id="chatbot-system-prompt" rows="5" required style="border-radius: 2px; font-size: 0.8rem;"></textarea>
+                                    <div class="form-text" style="font-size: 0.75rem;">Defines the AI assistant persona, tone, and guidance rules.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top d-flex justify-content-end">
+                        <button type="submit" class="btn text-white px-4" id="btn-save-chatbot-config" style="background-color: var(--admin-emerald); font-weight: 700; border-radius: 2px;">
+                            <i class="bi bi-check2-circle me-1"></i>Save Chatbot Settings
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add / Edit Service Modal -->
+    <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 2px; border: 1px solid var(--admin-border);">
+                <div class="modal-header" style="background-color: var(--admin-navy); color: #fff;">
+                    <h5 class="modal-title font-weight-bold" id="serviceModalLabel" style="font-size: 1.1rem; color: #fff;">Add New Service</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="service-form">
+                    <div class="modal-body p-4">
+                        <input type="hidden" id="service-edit-id" value="">
+                        
+                        <div id="service-modal-alert" class="alert alert-danger py-2 px-3 mb-3 small" style="display: none; border-radius: 2px;"></div>
+
+                        <div class="mb-3">
+                            <label for="service-title" class="form-label fw-bold small text-muted">Service Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="service-title" required placeholder="e.g., Essay Writing Service" style="border-radius: 2px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="service-slug" class="form-label fw-bold small text-muted">URL Slug <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="service-slug" required placeholder="e.g., essay-writing" style="border-radius: 2px;">
+                            <div class="form-text text-muted" style="font-size: 0.75rem;">Only lowercase letters, numbers, and hyphens (e.g., essay-writing).</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="service-description" class="form-label fw-bold small text-muted">Description <span class="text-danger">*</span></label>
+                            <textarea class="form-control form-control-sm" id="service-description" rows="3" required placeholder="Brief description of the service..." style="border-radius: 2px;"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="service-image-file" class="form-label fw-bold small text-muted">Service Image <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control form-control-sm" id="service-image-file" accept="image/*" style="border-radius: 2px;">
+                            <input type="hidden" id="service-image-url" value="">
+                            
+                            <div id="service-image-preview-wrapper" class="mt-2 p-2 bg-light border rounded" style="display: none;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img id="service-image-preview" src="" alt="Service Image Preview" style="width: 54px; height: 54px; object-fit: cover; border-radius: 4px; border: 1px solid var(--admin-border);">
+                                    <div class="overflow-hidden">
+                                        <span id="service-image-name" class="small fw-semibold text-dark d-block text-truncate" style="max-width: 200px;">Current Image</span>
+                                        <span id="service-image-status" class="extra-small text-muted d-block" style="font-size: 0.75rem;">Saved Image</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="service-image-error" class="text-danger small mt-1" style="display: none;"></div>
+                        </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="service-is-active" checked>
+                            <label class="form-check-label fw-bold small text-muted" for="service-is-active">Active Service (Visible on public site)</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light px-4 py-3">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" style="border-radius: 2px;">Cancel</button>
+                        <button type="submit" class="btn btn-sm text-white" id="service-submit-btn" style="background-color: var(--admin-emerald); font-weight: 600; border-radius: 2px;">Save Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add / Edit Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 2px; border: 1px solid var(--admin-border);">
+                <div class="modal-header" style="background-color: var(--admin-navy); color: #fff;">
+                    <h5 class="modal-title font-weight-bold" id="reviewModalLabel" style="font-size: 1.1rem; color: #fff;">Add New Review</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="review-form">
+                    <div class="modal-body p-4">
+                        <input type="hidden" id="review-edit-id" value="">
+                        
+                        <div id="review-modal-alert" class="alert alert-danger py-2 px-3 mb-3 small" style="display: none; border-radius: 2px;"></div>
+
+                        <div class="mb-3">
+                            <label for="review-name" class="form-label fw-bold small text-muted">Student Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="review-name" required placeholder="e.g., Sarah Jenkins" style="border-radius: 2px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="review-role" class="form-label fw-bold small text-muted">Student Role / Major <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="review-role" required placeholder="e.g., Computer Science Major" style="border-radius: 2px;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="review-text" class="form-label fw-bold small text-muted">Review Text <span class="text-danger">*</span></label>
+                            <textarea class="form-control form-control-sm" id="review-text" rows="4" required placeholder="Write review feedback here..." style="border-radius: 2px;"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="review-avatar-file" class="form-label fw-bold small text-muted">Avatar Image</label>
+                            <input type="file" class="form-control form-control-sm" id="review-avatar-file" accept="image/*" style="border-radius: 2px;">
+                            <input type="hidden" id="review-avatar-url" value="img/testimonial-1.jpg">
+                            
+                            <div id="review-avatar-preview-wrapper" class="mt-2 p-2 bg-light border rounded" style="display: none;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img id="review-avatar-preview" src="" alt="Avatar Preview" style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 1px solid var(--admin-border);">
+                                    <div class="overflow-hidden">
+                                        <span id="review-avatar-name" class="small fw-semibold text-dark d-block text-truncate" style="max-width: 200px;">Current Avatar</span>
+                                        <span id="review-avatar-status" class="extra-small text-muted d-block" style="font-size: 0.75rem;">Saved Avatar</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="review-avatar-error" class="text-danger small mt-1" style="display: none;"></div>
+                        </div>
+
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="review-is-active" checked>
+                            <label class="form-check-label fw-bold small text-muted" for="review-is-active">Active Review (Visible on public site)</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light px-4 py-3">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" style="border-radius: 2px;">Cancel</button>
+                        <button type="submit" class="btn btn-sm text-white" id="review-submit-btn" style="background-color: var(--admin-emerald); font-weight: 600; border-radius: 2px;">Save Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Check Authentication Token
+            var token = localStorage.getItem('assignmentghar_admin_token');
+            var adminUserData = localStorage.getItem('assignmentghar_admin_user');
+
+            if (!token) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            // Populate Admin Email Info
+            if (adminUserData) {
+                try {
+                    var parsedUser = JSON.parse(adminUserData);
+                    if (parsedUser && parsedUser.email) {
+                        document.getElementById('admin-user-email').textContent = parsedUser.email;
+                        document.getElementById('admin-welcome-msg').textContent = 'Welcome back, ' + parsedUser.email + '! Manage student contact inquiries below.';
+                    }
+                } catch (e) {
+                    console.error('Error parsing admin user data:', e);
+                }
+            }
+
+            // 2. State Variables
+            var currentPage = 1;
+            var currentLimit = 20;
+            var currentStatusFilter = '';
+            var totalPages = 1;
+            var API_BASE = window.ASSIGNMENTGHAR_API_URL || '/api';
+
+            // DOM Elements
+            var filterStatusSelect = document.getElementById('filter-status');
+            var tableLoading = document.getElementById('admin-table-loading');
+            var tableError = document.getElementById('admin-table-error');
+            var errorText = document.getElementById('admin-error-text');
+            var tableEmpty = document.getElementById('admin-table-empty');
+            var requestsTable = document.getElementById('admin-requests-table');
+            var requestsTbody = document.getElementById('admin-requests-tbody');
+            var paginationContainer = document.getElementById('admin-pagination-container');
+            var paginationInfo = document.getElementById('admin-pagination-info');
+            var btnPrev = document.getElementById('btn-prev-page');
+            var btnNext = document.getElementById('btn-next-page');
+            var btnLogout = document.getElementById('admin-logout-btn');
+            var btnRetry = document.getElementById('admin-retry-btn');
+            var toastContainer = document.getElementById('admin-toast-container');
+
+            // 3. Attach Event Handlers
+            btnLogout.addEventListener('click', function () {
+                localStorage.removeItem('assignmentghar_admin_token');
+                localStorage.removeItem('assignmentghar_admin_user');
+                window.location.href = 'admin-login.html';
+            });
+
+            filterStatusSelect.addEventListener('change', function () {
+                currentStatusFilter = filterStatusSelect.value;
+                currentPage = 1;
+                fetchContactRequests();
+            });
+
+            btnPrev.addEventListener('click', function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    fetchContactRequests();
+                }
+            });
+
+            btnNext.addEventListener('click', function () {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    fetchContactRequests();
+                }
+            });
+
+            btnRetry.addEventListener('click', function () {
+                fetchContactRequests();
+            });
+
+            // 4. Fetch Contact Requests Function
+            async function fetchContactRequests() {
+                showLoadingState();
+
+                var queryUrl = API_BASE + '/admin/contact-requests?page=' + currentPage + '&limit=' + currentLimit;
+                if (currentStatusFilter) {
+                    queryUrl += '&status=' + encodeURIComponent(currentStatusFilter);
+                }
+
+                try {
+                    var response = await fetch(queryUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+
+                    if (response.ok && result.success) {
+                        renderTableData(result.data || [], result.meta || {});
+                        fetchSummaryStats();
+                    } else {
+                        showErrorState(result.message || 'Failed to fetch contact requests.');
+                    }
+                } catch (err) {
+                    console.error('Fetch contact requests error:', err);
+                    showErrorState('Unable to connect to the backend server. Please verify backend is running on port 5001.');
+                }
+            }
+
+            // 5. Fetch Summary Stats for All Statuses
+            async function fetchSummaryStats() {
+                try {
+                    var response = await fetch(API_BASE + '/admin/contact-requests?page=1&limit=100', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.ok) {
+                        var result = await response.json();
+                        if (result.success && result.data) {
+                            var allData = result.data;
+                            var total = result.meta ? result.meta.total : allData.length;
+                            document.getElementById('stat-total-count').textContent = total;
+
+                            var pendingCount = 0;
+                            var progressCount = 0;
+                            var completedCount = 0;
+
+                            allData.forEach(function (r) {
+                                if (r.status === 'PENDING') pendingCount++;
+                                if (r.status === 'IN_PROGRESS') progressCount++;
+                                if (r.status === 'COMPLETED') completedCount++;
+                            });
+
+                            document.getElementById('stat-pending-count').textContent = pendingCount;
+                            document.getElementById('stat-progress-count').textContent = progressCount;
+                            document.getElementById('stat-completed-count').textContent = completedCount;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error fetching summary stats:', e);
+                }
+            }
+
+            // 6. Render Table
+            function renderTableData(data, meta) {
+                hideAllStates();
+
+                if (!data || data.length === 0) {
+                    tableEmpty.style.display = 'block';
+                    paginationContainer.style.display = 'none';
+                    return;
+                }
+
+                requestsTbody.innerHTML = '';
+
+                data.forEach(function (req) {
+                    var tr = document.createElement('tr');
+                    var formattedDate = formatDate(req.createdAt);
+
+                    tr.innerHTML = `
+                        <td>
+                            <span class="admin-req-name">${escapeHtml(req.fullName)}</span>
+                        </td>
+                        <td>
+                            <div class="admin-req-email"><i class="bi bi-envelope me-1"></i>${escapeHtml(req.email)}</div>
+                            <div class="admin-req-phone"><i class="bi bi-telephone me-1"></i>${escapeHtml(req.phone || 'N/A')}</div>
+                        </td>
+                        <td>
+                            <span class="admin-req-service">${escapeHtml(req.service)}</span>
+                        </td>
+                        <td>
+                            <div class="admin-req-desc">${escapeHtml(req.requirements)}</div>
+                        </td>
+                        <td>
+                            <span class="text-muted small">${formattedDate}</span>
+                        </td>
+                        <td>
+                            <select class="admin-status-select status-${req.status}" data-id="${req.id}">
+                                <option value="PENDING" ${req.status === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                                <option value="IN_PROGRESS" ${req.status === 'IN_PROGRESS' ? 'selected' : ''}>IN_PROGRESS</option>
+                                <option value="COMPLETED" ${req.status === 'COMPLETED' ? 'selected' : ''}>COMPLETED</option>
+                                <option value="CANCELLED" ${req.status === 'CANCELLED' ? 'selected' : ''}>CANCELLED</option>
+                            </select>
+                        </td>
+                    `;
+
+                    requestsTbody.appendChild(tr);
+                });
+
+                // Attach Status Change Event Listeners to Dropdowns
+                var selects = requestsTbody.querySelectorAll('.admin-status-select');
+                selects.forEach(function (select) {
+                    select.addEventListener('change', function (e) {
+                        var reqId = select.getAttribute('data-id');
+                        var newStatus = select.value;
+                        updateRequestStatus(reqId, newStatus, select);
+                    });
+                });
+
+                // Update Pagination Controls
+                totalPages = meta.totalPages || 1;
+                var totalRecords = meta.total || data.length;
+                var startItem = (meta.page - 1) * meta.limit + 1;
+                var endItem = Math.min(meta.page * meta.limit, totalRecords);
+
+                if (totalRecords === 0) {
+                    paginationInfo.textContent = 'No records';
+                } else {
+                    paginationInfo.textContent = 'Showing ' + startItem + ' - ' + endItem + ' of ' + totalRecords + ' requests';
+                }
+
+                btnPrev.disabled = currentPage <= 1;
+                btnNext.disabled = currentPage >= totalPages;
+
+                requestsTable.style.display = 'table';
+                paginationContainer.style.display = 'flex';
+            }
+
+            // 7. Update Request Status via API
+            async function updateRequestStatus(id, newStatus, selectElem) {
+                var previousStatusMatch = selectElem.className.match(/status-([A-Z_]+)/);
+                var previousStatus = previousStatusMatch ? previousStatusMatch[1] : 'PENDING';
+
+                selectElem.disabled = true;
+
+                try {
+                    var response = await fetch(API_BASE + '/admin/contact-requests/' + id, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+
+                    if (response.ok && result.success) {
+                        selectElem.className = 'admin-status-select status-' + newStatus;
+                        showToast('Request status updated to ' + newStatus, 'success');
+                        fetchSummaryStats();
+                    } else {
+                        selectElem.value = previousStatus;
+                        showToast(result.message || 'Failed to update status.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Status update error:', err);
+                    selectElem.value = previousStatus;
+                    showToast('Connection error. Could not update status.', 'danger');
+                } finally {
+                    selectElem.disabled = false;
+                }
+            }
+
+            // UI Helper Functions
+            function hideAllStates() {
+                tableLoading.style.display = 'none';
+                tableError.style.display = 'none';
+                tableEmpty.style.display = 'none';
+                requestsTable.style.display = 'none';
+            }
+
+            function showLoadingState() {
+                hideAllStates();
+                tableLoading.style.display = 'block';
+            }
+
+            function showErrorState(msg) {
+                hideAllStates();
+                errorText.textContent = msg;
+                tableError.style.display = 'block';
+            }
+
+            function showToast(msg, type) {
+                var alertClass = type === 'success' ? 'alert alert-success py-2 px-3 mb-0' : 'alert alert-danger py-2 px-3 mb-0';
+                toastContainer.innerHTML = '<div class="' + alertClass + '" style="border-radius: 2px; font-size: 0.875rem;" role="alert">' + escapeHtml(msg) + '</div>';
+                toastContainer.style.display = 'block';
+                setTimeout(function () {
+                    toastContainer.style.display = 'none';
+                }, 3500);
+            }
+
+            function formatDate(isoStr) {
+                if (!isoStr) return '';
+                try {
+                    var d = new Date(isoStr);
+                    return d.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    return isoStr;
+                }
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                var div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            // Initial Fetch
+            fetchContactRequests();
+
+            function formatImageUrl(url) {
+                if (!url) return '';
+                if (url.startsWith('/uploads/')) {
+                    var apiOrigin = API_BASE.replace(/\/api\/?$/, '');
+                    return apiOrigin + url;
+                }
+                return url;
+            }
+
+            async function uploadFileToBackend(file) {
+                var maxMB = 5;
+                if (file.size > maxMB * 1024 * 1024) {
+                    throw new Error('File size exceeds ' + maxMB + 'MB limit.');
+                }
+                if (!file.type || !file.type.startsWith('image/')) {
+                    throw new Error('Selected file is not a valid image. Only JPEG, PNG, GIF, WEBP, and SVG are allowed.');
+                }
+
+                var formData = new FormData();
+                formData.append('image', file);
+
+                var uploadUrl = API_BASE + '/admin/upload';
+                var response = await fetch(uploadUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: formData
+                });
+
+                var result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Image upload failed.');
+                }
+
+                return result.data.url;
+            }
+
+            // ==================== SERVICES MANAGEMENT LOGIC ====================
+            var servicesLoading = document.getElementById('admin-services-loading');
+            var servicesError = document.getElementById('admin-services-error');
+            var servicesErrorText = document.getElementById('admin-services-error-text');
+            var servicesRetryBtn = document.getElementById('admin-services-retry-btn');
+            var servicesEmpty = document.getElementById('admin-services-empty');
+            var servicesTable = document.getElementById('admin-services-table');
+            var servicesTbody = document.getElementById('admin-services-tbody');
+            var btnOpenAddService = document.getElementById('btn-open-add-service-modal');
+            var serviceForm = document.getElementById('service-form');
+            var serviceModalElem = document.getElementById('serviceModal');
+            var serviceModal = new bootstrap.Modal(serviceModalElem);
+            var serviceModalLabel = document.getElementById('serviceModalLabel');
+            var serviceModalAlert = document.getElementById('service-modal-alert');
+            var inputServiceEditId = document.getElementById('service-edit-id');
+            var inputServiceTitle = document.getElementById('service-title');
+            var inputServiceSlug = document.getElementById('service-slug');
+            var inputServiceDesc = document.getElementById('service-description');
+            var inputServiceFile = document.getElementById('service-image-file');
+            var inputServiceUrl = document.getElementById('service-image-url');
+            var serviceImagePreviewWrapper = document.getElementById('service-image-preview-wrapper');
+            var serviceImagePreview = document.getElementById('service-image-preview');
+            var serviceImageName = document.getElementById('service-image-name');
+            var serviceImageStatus = document.getElementById('service-image-status');
+            var serviceImageError = document.getElementById('service-image-error');
+            var serviceSubmitBtn = document.getElementById('service-submit-btn');
+            var inputServiceActive = document.getElementById('service-is-active');
+
+            // File selection listener for Service Image
+            inputServiceFile.addEventListener('change', function () {
+                serviceImageError.style.display = 'none';
+                serviceImageError.textContent = '';
+                var file = inputServiceFile.files[0];
+                if (file) {
+                    if (!file.type || !file.type.startsWith('image/')) {
+                        serviceImageError.textContent = 'Invalid file type. Please select an image file.';
+                        serviceImageError.style.display = 'block';
+                        inputServiceFile.value = '';
+                        return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        serviceImageError.textContent = 'File size exceeds 5MB limit.';
+                        serviceImageError.style.display = 'block';
+                        inputServiceFile.value = '';
+                        return;
+                    }
+                    var objUrl = URL.createObjectURL(file);
+                    serviceImagePreview.src = objUrl;
+                    serviceImageName.textContent = file.name;
+                    serviceImageStatus.textContent = 'New file selected (Will upload on Save)';
+                    serviceImagePreviewWrapper.style.display = 'block';
+                }
+            });
+
+            // Slug Auto Generation when typing title
+            inputServiceTitle.addEventListener('input', function () {
+                if (!inputServiceEditId.value) {
+                    var generatedSlug = inputServiceTitle.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                    inputServiceSlug.value = generatedSlug;
+                }
+            });
+
+            btnOpenAddService.addEventListener('click', function () {
+                resetServiceForm();
+                serviceModalLabel.textContent = 'Add New Service';
+                serviceModal.show();
+            });
+
+            servicesRetryBtn.addEventListener('click', function () {
+                fetchServices();
+            });
+
+            async function fetchServices() {
+                showServicesLoading();
+                try {
+                    var response = await fetch(API_BASE + '/admin/services', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        renderServicesTable(result.data || []);
+                    } else {
+                        showServicesError(result.message || 'Failed to fetch services list.');
+                    }
+                } catch (err) {
+                    console.error('Fetch services error:', err);
+                    showServicesError('Unable to connect to backend server on port 5001.');
+                }
+            }
+
+            function renderServicesTable(services) {
+                hideServicesStates();
+                if (!services || services.length === 0) {
+                    servicesEmpty.style.display = 'block';
+                    return;
+                }
+
+                servicesTbody.innerHTML = '';
+                services.forEach(function (service) {
+                    var tr = document.createElement('tr');
+                    var imgPath = formatImageUrl(service.image || 'img/property-1.jpg');
+                    var statusBadge = service.isActive
+                        ? '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Active</span>'
+                        : '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Inactive</span>';
+
+                    tr.innerHTML = `
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="${escapeHtml(imgPath)}" alt="${escapeHtml(service.title)}" style="width: 38px; height: 38px; object-fit: cover; border-radius: 2px; border: 1px solid var(--admin-border);" onerror="this.src='img/property-1.jpg';">
+                                <span class="fw-bold text-dark">${escapeHtml(service.title)}</span>
+                            </div>
+                        </td>
+                        <td><code>${escapeHtml(service.slug)}</code></td>
+                        <td>
+                            <div class="admin-req-desc" style="max-width: 250px;">${escapeHtml(service.description)}</div>
+                        </td>
+                        <td><span class="text-muted small">${escapeHtml(service.image)}</span></td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="d-flex gap-1 align-items-center">
+                                <button class="btn btn-sm btn-outline-primary btn-edit-svc" title="Edit Service" style="border-radius: 2px;">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm ${service.isActive ? 'btn-outline-warning' : 'btn-outline-success'} btn-toggle-svc" title="${service.isActive ? 'Deactivate' : 'Activate'}" style="border-radius: 2px;">
+                                    ${service.isActive ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>'}
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger btn-delete-svc" title="Delete Service" style="border-radius: 2px;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+
+                    var btnEdit = tr.querySelector('.btn-edit-svc');
+                    btnEdit.addEventListener('click', function () {
+                        openEditServiceModal(service);
+                    });
+
+                    var btnToggle = tr.querySelector('.btn-toggle-svc');
+                    btnToggle.addEventListener('click', function () {
+                        toggleServiceActive(service.id, !service.isActive);
+                    });
+
+                    var btnDelete = tr.querySelector('.btn-delete-svc');
+                    btnDelete.addEventListener('click', function () {
+                        deleteService(service.id, service.title);
+                    });
+
+                    servicesTbody.appendChild(tr);
+                });
+
+                servicesTable.style.display = 'table';
+            }
+
+            function openEditServiceModal(service) {
+                resetServiceForm();
+                serviceModalLabel.textContent = 'Edit Service';
+                inputServiceEditId.value = service.id;
+                inputServiceTitle.value = service.title;
+                inputServiceSlug.value = service.slug;
+                inputServiceDesc.value = service.description;
+                inputServiceUrl.value = service.image || '';
+                inputServiceActive.checked = service.isActive;
+
+                if (service.image) {
+                    serviceImagePreview.src = formatImageUrl(service.image);
+                    serviceImageName.textContent = service.image.split('/').pop() || 'Saved Image';
+                    serviceImageStatus.textContent = 'Currently saved image';
+                    serviceImagePreviewWrapper.style.display = 'block';
+                }
+
+                serviceModal.show();
+            }
+
+            function resetServiceForm() {
+                serviceForm.reset();
+                inputServiceEditId.value = '';
+                inputServiceUrl.value = '';
+                inputServiceActive.checked = true;
+                serviceModalAlert.style.display = 'none';
+                serviceModalAlert.textContent = '';
+                serviceImageError.style.display = 'none';
+                serviceImageError.textContent = '';
+                serviceImagePreviewWrapper.style.display = 'none';
+                serviceImagePreview.src = '';
+                serviceSubmitBtn.disabled = false;
+                serviceSubmitBtn.textContent = 'Save Service';
+            }
+
+            serviceForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                var editId = inputServiceEditId.value;
+                var title = inputServiceTitle.value.trim();
+                var slug = inputServiceSlug.value.trim();
+                var description = inputServiceDesc.value.trim();
+                var isActive = inputServiceActive.checked;
+
+                if (!title || !slug || !description) {
+                    showModalAlert('Please fill in all required text fields.');
+                    return;
+                }
+
+                var slugRegex = /^[a-z0-9-]+$/;
+                if (!slugRegex.test(slug)) {
+                    showModalAlert('Slug must contain only lowercase letters, numbers, and hyphens (e.g. essay-writing).');
+                    return;
+                }
+
+                var finalImageUrl = inputServiceUrl.value.trim();
+
+                // If new image file is chosen, upload it first
+                if (inputServiceFile.files && inputServiceFile.files[0]) {
+                    try {
+                        serviceSubmitBtn.disabled = true;
+                        serviceSubmitBtn.textContent = 'Uploading Image...';
+                        finalImageUrl = await uploadFileToBackend(inputServiceFile.files[0]);
+                    } catch (uploadErr) {
+                        serviceSubmitBtn.disabled = false;
+                        serviceSubmitBtn.textContent = 'Save Service';
+                        showModalAlert(uploadErr.message || 'Image upload failed.');
+                        return;
+                    }
+                }
+
+                if (!finalImageUrl) {
+                    serviceSubmitBtn.disabled = false;
+                    serviceSubmitBtn.textContent = 'Save Service';
+                    showModalAlert('Please select an image file for the service.');
+                    return;
+                }
+
+                var method = editId ? 'PATCH' : 'POST';
+                var url = editId ? API_BASE + '/admin/services/' + editId : API_BASE + '/admin/services';
+
+                var payload = {
+                    title: title,
+                    slug: slug,
+                    description: description,
+                    image: finalImageUrl,
+                    isActive: isActive
+                };
+
+                try {
+                    serviceSubmitBtn.disabled = true;
+                    serviceSubmitBtn.textContent = 'Saving Service...';
+                    var response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        serviceModal.hide();
+                        showToast(editId ? 'Service updated successfully.' : 'New service created successfully.', 'success');
+                        fetchServices();
+                    } else {
+                        showModalAlert(result.message || 'Failed to save service.');
+                    }
+                } catch (err) {
+                    console.error('Save service error:', err);
+                    showModalAlert('Network error. Failed to connect to server.');
+                } finally {
+                    serviceSubmitBtn.disabled = false;
+                    serviceSubmitBtn.textContent = 'Save Service';
+                }
+            });
+
+            async function toggleServiceActive(id, newActiveStatus) {
+                try {
+                    var response = await fetch(API_BASE + '/admin/services/' + id, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ isActive: newActiveStatus })
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Service status updated.', 'success');
+                        fetchServices();
+                    } else {
+                        showToast(result.message || 'Failed to update service status.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Toggle service status error:', err);
+                    showToast('Network error while updating status.', 'danger');
+                }
+            }
+
+            async function deleteService(id, title) {
+                if (!confirm('Are you sure you want to delete the service "' + title + '"? This action cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    var response = await fetch(API_BASE + '/admin/services/' + id, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Service deleted successfully.', 'success');
+                        fetchServices();
+                    } else {
+                        showToast(result.message || 'Failed to delete service.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Delete service error:', err);
+                    showToast('Network error while deleting service.', 'danger');
+                }
+            }
+
+            function hideServicesStates() {
+                servicesLoading.style.display = 'none';
+                servicesError.style.display = 'none';
+                servicesEmpty.style.display = 'none';
+                servicesTable.style.display = 'none';
+            }
+
+            function showServicesLoading() {
+                hideServicesStates();
+                servicesLoading.style.display = 'block';
+            }
+
+            function showServicesError(msg) {
+                hideServicesStates();
+                servicesErrorText.textContent = msg;
+                servicesError.style.display = 'block';
+            }
+
+            function showModalAlert(msg) {
+                serviceModalAlert.textContent = msg;
+                serviceModalAlert.style.display = 'block';
+            }
+
+            // Initial Fetch Services
+            fetchServices();
+
+            // ==================== REVIEWS MANAGEMENT LOGIC ====================
+            var reviewsLoading = document.getElementById('admin-reviews-loading');
+            var reviewsError = document.getElementById('admin-reviews-error');
+            var reviewsErrorText = document.getElementById('admin-reviews-error-text');
+            var reviewsRetryBtn = document.getElementById('admin-reviews-retry-btn');
+            var reviewsEmpty = document.getElementById('admin-reviews-empty');
+            var reviewsTable = document.getElementById('admin-reviews-table');
+            var reviewsTbody = document.getElementById('admin-reviews-tbody');
+            var btnOpenAddReview = document.getElementById('btn-open-add-review-modal');
+            var reviewForm = document.getElementById('review-form');
+            var reviewModalElem = document.getElementById('reviewModal');
+            var reviewModal = new bootstrap.Modal(reviewModalElem);
+            var reviewModalLabel = document.getElementById('reviewModalLabel');
+            var reviewModalAlert = document.getElementById('review-modal-alert');
+            var inputReviewEditId = document.getElementById('review-edit-id');
+            var inputReviewName = document.getElementById('review-name');
+            var inputReviewRole = document.getElementById('review-role');
+            var inputReviewText = document.getElementById('review-text');
+            var inputReviewFile = document.getElementById('review-avatar-file');
+            var inputReviewAvatarUrl = document.getElementById('review-avatar-url');
+            var reviewAvatarPreviewWrapper = document.getElementById('review-avatar-preview-wrapper');
+            var reviewAvatarPreview = document.getElementById('review-avatar-preview');
+            var reviewAvatarName = document.getElementById('review-avatar-name');
+            var reviewAvatarStatus = document.getElementById('review-avatar-status');
+            var reviewAvatarError = document.getElementById('review-avatar-error');
+            var reviewSubmitBtn = document.getElementById('review-submit-btn');
+            var inputReviewActive = document.getElementById('review-is-active');
+
+            // File selection listener for Review Avatar
+            inputReviewFile.addEventListener('change', function () {
+                reviewAvatarError.style.display = 'none';
+                reviewAvatarError.textContent = '';
+                var file = inputReviewFile.files[0];
+                if (file) {
+                    if (!file.type || !file.type.startsWith('image/')) {
+                        reviewAvatarError.textContent = 'Invalid file type. Please select an image file.';
+                        reviewAvatarError.style.display = 'block';
+                        inputReviewFile.value = '';
+                        return;
+                    }
+                    if (file.size > 5 * 1024 * 1024) {
+                        reviewAvatarError.textContent = 'File size exceeds 5MB limit.';
+                        reviewAvatarError.style.display = 'block';
+                        inputReviewFile.value = '';
+                        return;
+                    }
+                    var objUrl = URL.createObjectURL(file);
+                    reviewAvatarPreview.src = objUrl;
+                    reviewAvatarName.textContent = file.name;
+                    reviewAvatarStatus.textContent = 'New file selected (Will upload on Save)';
+                    reviewAvatarPreviewWrapper.style.display = 'block';
+                }
+            });
+
+            btnOpenAddReview.addEventListener('click', function () {
+                resetReviewForm();
+                reviewModalLabel.textContent = 'Add New Review';
+                reviewModal.show();
+            });
+
+            reviewsRetryBtn.addEventListener('click', function () {
+                fetchReviews();
+            });
+
+            async function fetchReviews() {
+                showReviewsLoading();
+                try {
+                    var response = await fetch(API_BASE + '/admin/reviews', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        renderReviewsTable(result.data || []);
+                    } else {
+                        showReviewsError(result.message || 'Failed to fetch reviews list.');
+                    }
+                } catch (err) {
+                    console.error('Fetch reviews error:', err);
+                    showReviewsError('Unable to connect to backend server on port 5001.');
+                }
+            }
+
+            function renderReviewsTable(reviews) {
+                hideReviewsStates();
+                if (!reviews || reviews.length === 0) {
+                    reviewsEmpty.style.display = 'block';
+                    return;
+                }
+
+                reviewsTbody.innerHTML = '';
+                reviews.forEach(function (rev) {
+                    var tr = document.createElement('tr');
+                    var avatarPath = formatImageUrl(rev.avatar || 'img/testimonial-1.jpg');
+                    var statusBadge = rev.isActive
+                        ? '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Active</span>'
+                        : '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Inactive</span>';
+
+                    tr.innerHTML = `
+                        <td>
+                            <span class="fw-bold text-dark">${escapeHtml(rev.name)}</span>
+                        </td>
+                        <td><span class="text-muted small">${escapeHtml(rev.role)}</span></td>
+                        <td>
+                            <div class="admin-req-desc" style="max-width: 280px;">${escapeHtml(rev.review)}</div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="${escapeHtml(avatarPath)}" alt="${escapeHtml(rev.name)}" style="width: 34px; height: 34px; object-fit: cover; border-radius: 50%; border: 1px solid var(--admin-border);" onerror="this.src='img/testimonial-1.jpg';">
+                                <span class="text-muted extra-small" style="font-size: 0.75rem;">${escapeHtml(rev.avatar || 'img/testimonial-1.jpg')}</span>
+                            </div>
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="d-flex gap-1 align-items-center">
+                                <button class="btn btn-sm btn-outline-primary btn-edit-rev" title="Edit Review" style="border-radius: 2px;">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm ${rev.isActive ? 'btn-outline-warning' : 'btn-outline-success'} btn-toggle-rev" title="${rev.isActive ? 'Deactivate' : 'Activate'}" style="border-radius: 2px;">
+                                    ${rev.isActive ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>'}
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger btn-delete-rev" title="Delete Review" style="border-radius: 2px;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+
+                    var btnEdit = tr.querySelector('.btn-edit-rev');
+                    btnEdit.addEventListener('click', function () {
+                        openEditReviewModal(rev);
+                    });
+
+                    var btnToggle = tr.querySelector('.btn-toggle-rev');
+                    btnToggle.addEventListener('click', function () {
+                        toggleReviewActive(rev.id, !rev.isActive);
+                    });
+
+                    var btnDelete = tr.querySelector('.btn-delete-rev');
+                    btnDelete.addEventListener('click', function () {
+                        deleteReview(rev.id, rev.name);
+                    });
+
+                    reviewsTbody.appendChild(tr);
+                });
+
+                reviewsTable.style.display = 'table';
+            }
+
+            function openEditReviewModal(rev) {
+                resetReviewForm();
+                reviewModalLabel.textContent = 'Edit Review';
+                inputReviewEditId.value = rev.id;
+                inputReviewName.value = rev.name;
+                inputReviewRole.value = rev.role;
+                inputReviewText.value = rev.review;
+                inputReviewAvatarUrl.value = rev.avatar || 'img/testimonial-1.jpg';
+                inputReviewActive.checked = rev.isActive;
+
+                var avatarToShow = rev.avatar || 'img/testimonial-1.jpg';
+                reviewAvatarPreview.src = formatImageUrl(avatarToShow);
+                reviewAvatarName.textContent = avatarToShow.split('/').pop() || 'Saved Avatar';
+                reviewAvatarStatus.textContent = 'Currently saved avatar';
+                reviewAvatarPreviewWrapper.style.display = 'block';
+
+                reviewModal.show();
+            }
+
+            function resetReviewForm() {
+                reviewForm.reset();
+                inputReviewEditId.value = '';
+                inputReviewAvatarUrl.value = 'img/testimonial-1.jpg';
+                inputReviewActive.checked = true;
+                reviewModalAlert.style.display = 'none';
+                reviewModalAlert.textContent = '';
+                reviewAvatarError.style.display = 'none';
+                reviewAvatarError.textContent = '';
+                reviewAvatarPreviewWrapper.style.display = 'none';
+                reviewAvatarPreview.src = '';
+                reviewSubmitBtn.disabled = false;
+                reviewSubmitBtn.textContent = 'Save Review';
+            }
+
+            reviewForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                reviewModalAlert.style.display = 'none';
+
+                var editId = inputReviewEditId.value;
+                var name = inputReviewName.value.trim(),
+                    role = inputReviewRole.value.trim(),
+                    reviewText = inputReviewText.value.trim(),
+                    isActive = inputReviewActive.checked;
+
+                if (!name || !role || !reviewText) {
+                    showReviewModalAlert('Please fill in all required text fields.');
+                    return;
+                }
+
+                var finalAvatarUrl = inputReviewAvatarUrl.value.trim() || 'img/testimonial-1.jpg';
+
+                // If new avatar file is chosen, upload it first
+                if (inputReviewFile.files && inputReviewFile.files[0]) {
+                    try {
+                        reviewSubmitBtn.disabled = true;
+                        reviewSubmitBtn.textContent = 'Uploading Avatar...';
+                        finalAvatarUrl = await uploadFileToBackend(inputReviewFile.files[0]);
+                    } catch (uploadErr) {
+                        reviewSubmitBtn.disabled = false;
+                        reviewSubmitBtn.textContent = 'Save Review';
+                        showReviewModalAlert(uploadErr.message || 'Avatar upload failed.');
+                        return;
+                    }
+                }
+
+                var url = editId ? API_BASE + '/admin/reviews/' + editId : API_BASE + '/admin/reviews';
+                var method = editId ? 'PATCH' : 'POST';
+
+                var payload = {
+                    name: name,
+                    role: role,
+                    review: reviewText,
+                    avatar: finalAvatarUrl,
+                    isActive: isActive
+                };
+
+                try {
+                    reviewSubmitBtn.disabled = true;
+                    reviewSubmitBtn.textContent = 'Saving Review...';
+                    var response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        reviewModal.hide();
+                        showToast(editId ? 'Review updated successfully.' : 'New review created successfully.', 'success');
+                        fetchReviews();
+                    } else {
+                        showReviewModalAlert(result.message || 'Failed to save review.');
+                    }
+                } catch (err) {
+                    console.error('Save review error:', err);
+                    showReviewModalAlert('Network error. Failed to connect to server.');
+                } finally {
+                    reviewSubmitBtn.disabled = false;
+                    reviewSubmitBtn.textContent = 'Save Review';
+                }
+            });
+
+            async function toggleReviewActive(id, newActiveStatus) {
+                try {
+                    var response = await fetch(API_BASE + '/admin/reviews/' + id, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ isActive: newActiveStatus })
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Review status updated.', 'success');
+                        fetchReviews();
+                    } else {
+                        showToast(result.message || 'Failed to update review status.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Toggle review status error:', err);
+                    showToast('Network error while updating status.', 'danger');
+                }
+            }
+
+            async function deleteReview(id, name) {
+                if (!confirm('Are you sure you want to delete the review by "' + name + '"? This action cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    var response = await fetch(API_BASE + '/admin/reviews/' + id, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Review deleted successfully.', 'success');
+                        fetchReviews();
+                    } else {
+                        showToast(result.message || 'Failed to delete review.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Delete review error:', err);
+                    showToast('Network error while deleting review.', 'danger');
+                }
+            }
+
+            function hideReviewsStates() {
+                reviewsLoading.style.display = 'none';
+                reviewsError.style.display = 'none';
+                reviewsEmpty.style.display = 'none';
+                reviewsTable.style.display = 'none';
+            }
+
+            function showReviewsLoading() {
+                hideReviewsStates();
+                reviewsLoading.style.display = 'block';
+            }
+
+            function showReviewsError(msg) {
+                hideReviewsStates();
+                reviewsErrorText.textContent = msg;
+                reviewsError.style.display = 'block';
+            }
+
+            function showReviewModalAlert(msg) {
+                reviewModalAlert.textContent = msg;
+                reviewModalAlert.style.display = 'block';
+            }
+
+            // Initial Fetch Reviews
+            fetchReviews();
+
+            // ==================== WEBSITE SETTINGS LOGIC ====================
+            var settingsLoading = document.getElementById('admin-settings-loading');
+            var settingsError = document.getElementById('admin-settings-error');
+            var settingsErrorText = document.getElementById('admin-settings-error-text');
+            var settingsRetryBtn = document.getElementById('admin-settings-retry-btn');
+            var settingsForm = document.getElementById('settings-form');
+            var inputWhatsapp = document.getElementById('setting-whatsapp');
+            var inputEmail = document.getElementById('setting-email');
+            var inputAddress = document.getElementById('setting-address');
+            var inputLatitude = document.getElementById('setting-latitude');
+            var inputLongitude = document.getElementById('setting-longitude');
+            var btnSaveSettings = document.getElementById('btn-save-settings');
+
+            settingsRetryBtn.addEventListener('click', function () {
+                fetchSettings();
+            });
+
+            async function fetchSettings() {
+                showSettingsLoading();
+                try {
+                    var response = await fetch(API_BASE + '/admin/settings', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success && result.data) {
+                        var data = result.data;
+                        inputWhatsapp.value = data.whatsappNumber || '';
+                        inputEmail.value = data.contactEmail || '';
+                        inputAddress.value = data.address || '';
+                        inputLatitude.value = data.latitude !== undefined ? data.latitude : '';
+                        inputLongitude.value = data.longitude !== undefined ? data.longitude : '';
+
+                        hideSettingsStates();
+                        settingsForm.style.display = 'block';
+                    } else {
+                        showSettingsError(result.message || 'Failed to load settings.');
+                    }
+                } catch (err) {
+                    console.error('Fetch settings error:', err);
+                    showSettingsError('Unable to connect to backend server.');
+                }
+            }
+
+            settingsForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                btnSaveSettings.disabled = true;
+                btnSaveSettings.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Saving...';
+
+                var payload = {
+                    whatsappNumber: inputWhatsapp.value.trim(),
+                    contactEmail: inputEmail.value.trim(),
+                    address: inputAddress.value.trim(),
+                    latitude: parseFloat(inputLatitude.value),
+                    longitude: parseFloat(inputLongitude.value)
+                };
+
+                try {
+                    var response = await fetch(API_BASE + '/admin/settings', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Website settings updated successfully.', 'success');
+                    } else {
+                        showToast(result.message || 'Failed to update website settings.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Save settings error:', err);
+                    showToast('Network error while saving settings.', 'danger');
+                } finally {
+                    btnSaveSettings.disabled = false;
+                    btnSaveSettings.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Save Website Settings';
+                }
+            });
+
+            function hideSettingsStates() {
+                settingsLoading.style.display = 'none';
+                settingsError.style.display = 'none';
+                settingsForm.style.display = 'none';
+            }
+
+            function showSettingsLoading() {
+                hideSettingsStates();
+                settingsLoading.style.display = 'block';
+            }
+
+            function showSettingsError(msg) {
+                hideSettingsStates();
+                settingsErrorText.textContent = msg;
+                settingsError.style.display = 'block';
+            }
+
+            // Initial Fetch Settings
+            fetchSettings();
+
+            // ==================== CHATBOT CONFIGURATION LOGIC ====================
+            var chatbotLoading = document.getElementById('admin-chatbot-loading');
+            var chatbotError = document.getElementById('admin-chatbot-error');
+            var chatbotErrorText = document.getElementById('admin-chatbot-error-text');
+            var chatbotRetryBtn = document.getElementById('admin-chatbot-retry-btn');
+            var chatbotForm = document.getElementById('chatbot-config-form');
+            var inputChatbotIsEnabled = document.getElementById('chatbot-is-enabled');
+            var selectChatbotModel = document.getElementById('chatbot-model');
+            var inputChatbotTemp = document.getElementById('chatbot-temperature');
+            var inputChatbotMaxTokens = document.getElementById('chatbot-max-tokens');
+            var inputChatbotWelcome = document.getElementById('chatbot-welcome-message');
+            var inputChatbotPrompt = document.getElementById('chatbot-system-prompt');
+            var btnSaveChatbotConfig = document.getElementById('btn-save-chatbot-config');
+            var btnResetChatbotConfig = document.getElementById('btn-reset-chatbot-config');
+
+            chatbotRetryBtn.addEventListener('click', function () {
+                fetchChatbotConfig();
+            });
+
+            async function fetchChatbotConfig() {
+                showChatbotLoading();
+                try {
+                    var response = await fetch(API_BASE + '/admin/chatbot-config', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success && result.data) {
+                        var data = result.data;
+                        inputChatbotIsEnabled.checked = !!data.isEnabled;
+                        selectChatbotModel.value = data.model || 'gemini-3.5-flash';
+                        inputChatbotTemp.value = data.temperature !== undefined ? data.temperature : 0.7;
+                        inputChatbotMaxTokens.value = data.maxTokens !== undefined ? data.maxTokens : 400;
+                        inputChatbotWelcome.value = data.welcomeMessage || '';
+                        inputChatbotPrompt.value = data.systemPrompt || '';
+
+                        hideChatbotStates();
+                        chatbotForm.style.display = 'block';
+                    } else {
+                        showChatbotError(result.message || 'Failed to load chatbot configuration.');
+                    }
+                } catch (err) {
+                    console.error('Fetch chatbot config error:', err);
+                    showChatbotError('Unable to connect to backend server.');
+                }
+            }
+
+            chatbotForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                btnSaveChatbotConfig.disabled = true;
+                btnSaveChatbotConfig.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Saving...';
+
+                var payload = {
+                    isEnabled: inputChatbotIsEnabled.checked,
+                    model: selectChatbotModel.value,
+                    temperature: parseFloat(inputChatbotTemp.value),
+                    maxTokens: parseInt(inputChatbotMaxTokens.value, 10),
+                    welcomeMessage: inputChatbotWelcome.value.trim(),
+                    systemPrompt: inputChatbotPrompt.value.trim()
+                };
+
+                try {
+                    var response = await fetch(API_BASE + '/admin/chatbot-config', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Chatbot configuration updated successfully.', 'success');
+                    } else {
+                        showToast(result.message || 'Failed to update chatbot configuration.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Save chatbot config error:', err);
+                    showToast('Network error while saving chatbot settings.', 'danger');
+                } finally {
+                    btnSaveChatbotConfig.disabled = false;
+                    btnSaveChatbotConfig.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Save Chatbot Settings';
+                }
+            });
+
+            btnResetChatbotConfig.addEventListener('click', async function () {
+                if (!confirm('Are you sure you want to reset chatbot configuration to default settings?')) {
+                    return;
+                }
+
+                try {
+                    var response = await fetch(API_BASE + '/admin/chatbot-config', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await response.json();
+                    if (response.ok && result.success) {
+                        showToast('Chatbot configuration reset to default settings.', 'success');
+                        fetchChatbotConfig();
+                    } else {
+                        showToast(result.message || 'Failed to reset chatbot settings.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Reset chatbot config error:', err);
+                    showToast('Network error while resetting chatbot settings.', 'danger');
+                }
+            });
+
+            function hideChatbotStates() {
+                chatbotLoading.style.display = 'none';
+                chatbotError.style.display = 'none';
+                chatbotForm.style.display = 'none';
+            }
+
+            function showChatbotLoading() {
+                hideChatbotStates();
+                chatbotLoading.style.display = 'block';
+            }
+
+            function showChatbotError(msg) {
+                hideChatbotStates();
+                chatbotErrorText.textContent = msg;
+                chatbotError.style.display = 'block';
+            }
+
+            // Initial Fetch Chatbot Config
+            fetchChatbotConfig();
+        });
+    </script>
+</body>
+
+</html>

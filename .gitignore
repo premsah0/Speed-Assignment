@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Private keys / certificates
+*.key
+*.pem
+
+# Deployment / temporary files
+*.tar.gz
+scratch/

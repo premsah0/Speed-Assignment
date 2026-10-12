@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Speed Assignment Emblem: Graduation Cap + Speed Bolt + Book Base -->
+  <g id="speed-assignment-logo">
+    <!-- Graduation Cap Top (Navy & Green) -->
+    <path d="M256 116 L66 216 L256 286 L296 246 Z" fill="#0E2E50"/>
+    <path d="M256 116 L446 216 L256 286 L246 276 Z" fill="#00B98E"/>
+    
+    <!-- Skullcap Base -->
+    <path d="M146 266 H366 L341 356 H171 Z" fill="#0E2E50"/>
+    <line x1="146" y1="271" x2="366" y2="271" stroke="#00B98E" stroke-width="8"/>
+    
+    <!-- Speed Bolt Overlay -->
+    <polygon points="286,126 206,286 276,286 186,436 396,246 316,246 396,126" fill="#FFFFFF"/>
+    <polygon points="281,136 211,281 271,281 196,421 381,241 308,241 381,136" fill="#00B98E"/>
+    
+    <!-- Open Book Foundation -->
+    <path d="M96 366 L246 396 V436 L96 406 Z" fill="#0E2E50"/>
+    <path d="M266 396 L416 366 V406 L266 436 Z" fill="#00B98E"/>
+    <line x1="256" y1="386" x2="256" y2="441" stroke="#FFFFFF" stroke-width="6"/>
+  </g>
+</svg>

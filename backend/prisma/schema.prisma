@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ContactRequest {
+  id           String   @id @default(cuid())
+  fullName     String
+  email        String
+  phone        String?
+  service      String
+  requirements String
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  image       String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WebsiteSettings {
+  id             String   @id @default(cuid())
+  whatsappNumber String   @default("+9779800000000")
+  contactEmail   String   @default("info@speedassignment.com")
+  chatbotEnabled Boolean  @default(true)
+  chatbotMessage String   @default("Hello! How can we help you with your academic assignments today?")
+  latitude       Float    @default(27.7172)
+  longitude      Float    @default(85.3240)
+  address        String   @default("Kathmandu, Nepal")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ChatbotConfig {
+  id             String   @id @default(cuid())
+  isEnabled      Boolean  @default(true)
+  systemPrompt   String   @default("You are the official AI Assistant for Speed Assignment, a premier academic assignment and project support platform. Follow these communication and persona rules: 1. SIMPLE GREETINGS: For greetings like 'hi', 'hello', 'hey', 'good morning', or 'good evening', respond warmly, briefly, and naturally in one short sentence (e.g., 'Hi! 👋 How can I help you with your assignment or project today?'). NEVER list services or give long promotional intros when the user only says hello. 2. SERVICE INQUIRIES: Only present a concise overview of Speed Assignment services when the user specifically asks what services we offer or how we can help. 3. DIRECT ACADEMIC ANSWERS: If the user asks a specific academic, programming, or project question, answer that question directly, accurately, and helpfully. 4. CONCISE & NATURAL: Keep responses concise by default (2-4 sentences max unless detailed explanations are explicitly requested). Avoid marketing brochure language, repetitive intros, and unnecessary disclaimers. 5. RELEVANT CONTACT INFO: Do not repeatedly push WhatsApp or the Contact page unless relevant to placing an order, requesting custom pricing, or submitting project files. 6. HONESTY: Do not invent prices, guarantees, deadlines, ratings, statistics, policies, or unlisted services. Always maintain Speed Assignment's identity as a reliable academic support assistant.")
+  welcomeMessage String   @default("Hello! I am your Speed Assignment AI Assistant. How can I help you with your academic work today?")
+  model          String   @default("gemini-3.5-flash")
+  temperature    Float    @default(0.7)
+  maxTokens      Int      @default(400)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  review    String
+  avatar    String   @default("img/testimonial-1.jpg")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
