@@ -1,322 +1,113 @@
 # Speed Assignment
 
-A modern academic assistance platform built to connect students with assignment support, academic resources, and expert assistance.
+> A modern academic assistance platform built to connect students with reliable assignment support, academic resources, and expert assistance.
 
-🌐 **Live Website:** [https://speedassignment.com](https://speedassignment.com)
-
----
-
-## Overview
-
-**Speed Assignment** is a full-stack web platform designed for university and college students who require reliable assignment assistance, academic writing support, and project consultation.
-
-The platform provides a streamlined experience for students to explore services, request assistance, interact with an AI-powered assistant, and submit enquiries, while offering administrators a complete dashboard to manage incoming requests, website services, reviews, and dynamic site settings.
-
-### What the Platform Provides
-
-- **Student Assistance:** Custom assignment writing, research papers, coding projects, and academic consultations.
-- **Service Catalog:** Dynamic browsing of academic offerings, delivery timelines, and feature breakdowns.
-- **Direct Enquiry System:** Multi-field request submission forms for students to provide assignment guidelines.
-- **AI Academic Chatbot:** Integrated assistant powered by Google Gemini API for instant academic guidance.
-- **Student Reviews:** Verified testimonials with star ratings and client feedback.
-- **Administrative Control:** Password-protected portal to review enquiries, update content, adjust settings, and manage services.
+🌐 **Live Website:** [speedassignment.com](https://speedassignment.com/)
 
 ---
 
-## Features
+## 📌 Overview
 
-### Student / Public Website
+**Speed Assignment** is a full-stack academic assistance platform designed for university and college students who need reliable support with assignments, research work, programming tasks, project documentation, case studies, and other academic requirements.
 
-- **Responsive Design:** Optimized for mobile phones, tablets, and desktop workstations.
-- **Service Showcase:** Detailed listings for essays, dissertations, programming tasks, and case studies.
-- **Contact & Enquiry Forms:** Validated input forms with real-time feedback and direct backend storage.
-- **Dynamic Reviews:** Live rendering of verified student feedback fetched from the database.
-- **AI Chatbot Assistant:** Floating interactive assistant providing real-time answers to assignment queries.
-- **Informative Content:** Dedicated About, Services, Resources/Testimonials, and Privacy Policy pages.
-- **SEO Optimization:** Valid semantic HTML5, Open Graph tags, Twitter Card metadata, JSON-LD structured data, XML sitemap, and robots.txt.
+The platform provides a simple and user-friendly experience where students can explore available services, submit assignment enquiries, receive academic guidance, and interact with an AI-powered assistant.
 
-### Admin Dashboard
-
-- **Secure Authentication:** Protected login using JWT authentication and secure session tokens.
-- **Contact Request Management:** View, track status (Pending, In Progress, Resolved), and delete student submissions.
-- **Service Management:** Create, update, toggle visibility, and delete services.
-- **Review Moderation:** Approve, edit, add, or remove student testimonials.
-- **Website Settings Control:** Dynamically configure the contact email, WhatsApp support number, address, and coordinates.
-- **Chatbot Configuration:** Manage AI system prompts, welcome messages, temperature, and toggle chatbot availability.
-- **Media Uploads:** Upload and manage image assets with automated file storage.
-
-### Backend & API Architecture
-
-- **RESTful Endpoints:** Organized modular routes, controllers, and services.
-- **Database & ORM:** PostgreSQL managed through type-safe Prisma schema models.
-- **Input Validation:** Robust schema validation powered by Zod.
-- **Authentication:** Salted password hashing via `bcryptjs` and stateless JWT verification.
-- **Security Middleware:** Protection against common vulnerabilities via `helmet`, strict CORS policies, and rate limits.
-- **AI Integration:** Direct integration with Google Gemini API for intelligent chatbot conversations.
+An integrated administrative dashboard allows authorized administrators to manage website content, academic services, enquiries, reviews, chatbot settings, and other dynamic information.
 
 ---
 
-## Tech Stack
+## ✨ Key Features
 
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend** | HTML5, CSS3, JavaScript (ES6+), Bootstrap 5, Font Awesome, Bootstrap Icons |
-| **Backend** | Node.js (ES Modules), Express.js |
-| **Database & ORM** | PostgreSQL, Prisma ORM (`@prisma/client`, `@prisma/adapter-pg`) |
-| **Authentication** | JSON Web Tokens (`jsonwebtoken`), `bcryptjs` |
-| **Security & Middleware** | `helmet`, `cors`, `zod`, `morgan`, `multer` |
-| **AI Integration** | Google Gemini API (`@google/genai` / REST) |
-| **Deployment & Ops** | Ubuntu Linux VPS, Nginx, PM2 Process Manager, Cloudflare, SSL/TLS (Let's Encrypt) |
+### 🎓 Student Platform
 
----
+- Browse academic assistance services
+- Submit detailed assignment enquiries
+- Request support for projects, research papers, programming tasks, and coursework
+- View service information and available offerings
+- Submit contact and support requests
+- View student reviews and testimonials
+- Access informative academic resources
 
-## Project Structure
+### 🤖 AI Academic Assistant
 
-```text
-Speed-Assignment/
-├── index.html                  # Homepage with hero, services, and search
-├── about.html                  # About Us & company mission
-├── property-list.html          # Academic services catalog
-├── testimonial.html            # Verified reviews & academic resources
-├── contact.html                # Contact details & assignment enquiry form
-├── privacy.html                # Privacy policy & terms of service
-├── admin.html                  # Protected admin management dashboard
-├── admin-login.html            # Admin authentication login portal
-├── robots.txt                  # Search engine crawler instructions
-├── sitemap.xml                 # XML sitemap for SEO indexation
-│
-├── css/                        # Stylesheets
-│   ├── bootstrap.min.css       # Core Bootstrap CSS
-│   └── style.css               # Main application design system
-│
-├── js/                         # Client-side JavaScript
-│   ├── main.js                 # Theme behavior, sliders, and navigation
-│   ├── chatbot.js              # Floating AI assistant logic
-│   ├── reviews.js              # Dynamic review rendering from API
-│   ├── services.js             # Dynamic service rendering
-│   └── settings.js             # Client settings loader
-│
-├── img/                        # Public media assets and brand logo
-│   ├── logo.png                # Official transparent Speed Assignment logo
-│   ├── favicon.ico             # Browser favicon
-│   └── ...                     # Banners, service illustrations, and icons
-│
-└── backend/                    # Express.js REST API
-    ├── package.json            # Backend scripts and npm dependencies
-    ├── prisma/
-    │   ├── schema.prisma       # Prisma models and database schema
-    │   └── migrations/         # PostgreSQL database migration history
-    ├── src/
-    │   ├── server.js           # Express app initialization & server entry
-    │   ├── config/             # Environment, database, and system configs
-    │   ├── controllers/        # Request handling and response controllers
-    │   ├── middleware/         # Auth verification, error handlers, upload
-    │   ├── routes/             # REST API endpoint route definitions
-    │   ├── services/           # Business logic and database operations
-    │   └── scripts/            # Database seed and maintenance scripts
-    ├── uploads/                # User and admin uploaded media files
-    └── .env.example            # Environment variables template
-```
+- Interactive AI-powered chatbot
+- Provides instant academic guidance and assistance
+- Designed to help students with general academic queries
+- Integrated with Google Gemini API
+
+### 🛠️ Admin Dashboard
+
+- Secure administrator authentication
+- Manage academic services
+- Add, edit, and remove services
+- Manage student enquiries and request statuses
+- Manage reviews and testimonials
+- Update website contact information and settings
+- Configure the AI chatbot
+- Manage uploaded service and website images
+
+### 📱 Modern Web Experience
+
+- Responsive design for desktop, tablet, and mobile
+- Clean and modern user interface
+- Dynamic service and review sections
+- User-friendly enquiry forms
+- SEO-friendly website structure
+- Fast and lightweight frontend experience
 
 ---
 
-## Getting Started
+## 🧩 Technology
 
-### Prerequisites
+**Frontend**
+- HTML5
+- CSS3
+- JavaScript
+- Bootstrap 5
+- Font Awesome
 
-Ensure you have the following installed on your development machine:
+**Backend**
+- Node.js
+- Express.js
+- REST API
 
-- **Node.js** (v18.0.0 or higher)
-- **npm** (v9.0.0 or higher)
-- **PostgreSQL** (v14 or higher)
-- A modern web browser
+**Database**
+- PostgreSQL
+- Prisma ORM
 
----
+**Authentication & Security**
+- JWT
+- bcryptjs
+- Helmet
+- CORS
+- Zod
 
-### 1. Clone the Repository
+**AI**
+- Google Gemini API
 
-```bash
-git clone https://github.com/premsah0/Speed-Assignment.git
-cd Speed-Assignment
-```
-
----
-
-### 2. Backend Setup
-
-Navigate into the `backend` directory and install the dependencies:
-
-```bash
-cd backend
-npm install
-```
-
-Create your local `.env` configuration file from the provided template:
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in your local PostgreSQL database URL and secrets:
-
-```env
-PORT=5001
-NODE_ENV=development
-DATABASE_URL="postgresql://username:password@localhost:5432/speed_assignment?schema=public"
-ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000
-JWT_SECRET="your-super-secret-jwt-key"
-ADMIN_EMAIL="admin@speedassignment.com"
-ADMIN_PASSWORD="YourSecureAdminPassword123!"
-```
-
-Run database migrations to apply the schema:
-
-```bash
-npx prisma migrate deploy
-```
-
-*(Optional)* Seed default services and an initial admin account:
-
-```bash
-npm run seed:admin
-npm run seed:services
-```
-
-Start the backend development server:
-
-```bash
-npm run dev
-```
-
-The API will be running at `http://localhost:5001`.
+**Deployment**
+- Ubuntu VPS
+- Nginx
+- PM2
+- Cloudflare
+- HTTPS / SSL
 
 ---
 
-### 3. Frontend Setup
+## 🌐 Website
 
-From the root project directory, serve the static HTML/CSS/JS files using any local HTTP web server (such as Python's built-in HTTP server or VS Code Live Server):
+Visit the live platform:
 
-```bash
-# Return to the project root
-cd ..
-
-# Start a local static file server
-python3 -m http.server 8000
-```
-
-Open your browser and navigate to:
-
-```text
-http://localhost:8000
-```
-
-The frontend will automatically connect to the local backend at `http://localhost:5001/api`.
+**https://speedassignment.com/**
 
 ---
 
-## Environment Variables
+## 📄 Project Purpose
 
-All configuration is managed through environment variables in the `backend/` directory.
+Speed Assignment aims to provide students with an accessible platform for finding academic assistance and submitting their requirements through a streamlined digital experience.
 
-> **Note:** Sensitive configuration files (`.env`, `.env.*`, certificates, and keys) are strictly ignored by Git via `.gitignore` to prevent secret leaks. Never commit actual credentials to version control.
-
-| Variable | Description | Example / Default |
-| :--- | :--- | :--- |
-| `PORT` | Port the Express server listens on | `5001` |
-| `NODE_ENV` | Runtime environment (`development` / `production`) | `development` |
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/dbname` |
-| `ALLOWED_ORIGINS` | Comma-separated CORS allowed origins | `http://localhost:8000,https://speedassignment.com` |
-| `JWT_SECRET` | Secret key used for signing admin JWT tokens | `random_secure_hex_string` |
-| `ADMIN_EMAIL` | Default admin email for dashboard login seeding | `admin@speedassignment.com` |
-| `ADMIN_PASSWORD` | Default admin password for initial seed | *(configured locally)* |
-| `GEMINI_API_KEY` | *(Optional)* Google Gemini API key for AI chatbot | *(optional for development)* |
+The platform combines academic service management, student enquiries, reviews, administrative controls, and AI-powered assistance into a single web application.
 
 ---
 
-## API Reference
-
-The backend provides a structured REST API mounted under `/api`.
-
-### Public Endpoints
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/health` | Health check endpoint |
-| `POST` | `/api/contact` | Submit an assignment assistance request |
-| `GET` | `/api/services` | Retrieve list of active academic services |
-| `GET` | `/api/reviews` | Retrieve approved student reviews |
-| `GET` | `/api/settings` | Retrieve public website settings & contact info |
-| `POST` | `/api/chat` | Send a query to the AI Academic Assistant |
-
-### Admin Endpoints (Protected with JWT)
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/admin/login` | Authenticate admin & receive JWT token |
-| `GET` | `/api/admin/contact-requests` | List all student contact requests |
-| `PATCH` | `/api/admin/contact-requests/:id` | Update contact request status |
-| `DELETE` | `/api/admin/contact-requests/:id` | Remove a contact request |
-| `POST` | `/api/admin/services` | Create a new academic service |
-| `PUT` | `/api/admin/services/:id` | Update existing academic service |
-| `DELETE` | `/api/admin/services/:id` | Delete an academic service |
-| `GET` | `/api/admin/reviews` | Retrieve all reviews (active & inactive) |
-| `POST` | `/api/admin/reviews` | Add a new review |
-| `PUT` | `/api/admin/reviews/:id` | Update review content or status |
-| `DELETE` | `/api/admin/reviews/:id` | Delete a review |
-| `GET` | `/api/admin/settings` | Fetch full administrative site settings |
-| `PUT` | `/api/admin/settings` | Update contact, WhatsApp, and coordinates |
-| `GET` | `/api/admin/chatbot-config` | Fetch chatbot prompt, model, & temperature |
-| `PUT` | `/api/admin/chatbot-config` | Update chatbot configuration |
-| `POST` | `/api/admin/upload` | Upload image assets for services or site media |
-
----
-
-## Production / Deployment
-
-The production architecture is optimized for high performance, reliability, and security:
-
-```text
-[ Client Browser ]
-        │
-        ▼
-[ Cloudflare (DNS, Edge Caching & SSL/TLS) ]
-        │
-        ▼
-[ Nginx Reverse Proxy (Port 80 / 443) ]
-   ├── /        ──▶ Serves static HTML, CSS, JS, and Images directly
-   └── /api/    ──▶ Proxies to Express.js Backend (localhost:5001)
-                        │
-                        ▼
-             [ PM2 Process Manager ]
-             Node.js Backend Cluster
-                        │
-                        ▼
-             [ PostgreSQL Database ]
-```
-
-### Production Checklist
-
-1. **Static Files:** Nginx serves frontend assets directly with gzip compression and cache headers.
-2. **Reverse Proxy:** Nginx routes `/api/` traffic to `http://127.0.0.1:5001`.
-3. **Process Supervision:** PM2 keeps the Node.js backend daemonized with auto-restart on crashes or reboots (`pm2 start src/server.js --name "speed-backend"`).
-4. **Database Migration:** Prisma migrations run automatically before starting the backend in production.
-5. **SSL/TLS:** Secure HTTPS termination using Cloudflare Universal SSL and Let's Encrypt certificates.
-
----
-
-## Security
-
-- **Credential Protection:** Passwords are never stored in plaintext; they are securely salted and hashed using `bcryptjs`.
-- **Stateless Authentication:** Admin endpoints require a valid Bearer JWT token in the HTTP Authorization header.
-- **Environment Isolation:** Sensitive configurations, credentials, API keys, and database connection strings are kept exclusively in `.env` files and excluded from Git via `.gitignore`.
-- **HTTP Hardening:** Uses `helmet` to set secure HTTP headers (XSS Filter, Content-Security-Policy, HSTS, frameguard).
-- **CORS Protection:** Cross-Origin Resource Sharing is locked down to designated authorized origins.
-- **Input Sanitization:** API requests are validated with Zod schemas to protect against injection attacks and malformed payloads.
-
----
-
-## License
-
-Copyright © 2026 Speed Assignment. All Rights Reserved.
-
-This software and associated documentation files are proprietary and confidential. Unauthorized copying, distribution, modification, public display, or deployment of this code, via any medium, is strictly prohibited without the express prior written consent of the copyright owner.
+© 2026 Speed Assignment. All Rights Reserved.
