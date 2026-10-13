@@ -226,7 +226,7 @@ textarea {
 
 /* Brand Identity & Logo Sizing */
 .navbar-light .navbar-brand {
-    height: 38px;
+    height: 50px;
     padding: 0;
     display: flex;
     align-items: center;
@@ -236,14 +236,14 @@ textarea {
 }
 
 .navbar-light .navbar-brand img {
-    height: 38px;
+    height: 50px;
     width: auto;
     max-width: 100%;
     object-fit: contain;
 }
 
 .sticky-top .navbar-light .navbar-brand img {
-    height: 32px;
+    height: 42px !important;
 }
 
 .brand-icon-wrapper {
@@ -411,6 +411,14 @@ textarea {
         padding: 0.5rem 1rem !important;
     }
 
+    .navbar-light .navbar-brand {
+        height: 46px;
+    }
+
+    .navbar-light .navbar-brand img {
+        height: 46px !important;
+    }
+
     .navbar-toggler {
         border: 1px solid rgba(14, 46, 80, 0.12);
         padding: 5px 8px;
@@ -455,6 +463,14 @@ textarea {
 @media (max-width: 575.98px) {
     .nav-bar {
         height: 64px;
+    }
+
+    .navbar-light .navbar-brand {
+        height: 44px;
+    }
+
+    .navbar-light .navbar-brand img {
+        height: 44px !important;
     }
 }
 
@@ -1201,6 +1217,28 @@ textarea {
     line-height: 1.6;
 }
 
+.footer-email,
+.footer p.footer-email {
+    font-size: 0.8125rem !important;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: -0.01em;
+}
+
+.footer-email i {
+    flex-shrink: 0;
+}
+
+@media (max-width: 576px) {
+    .footer-email,
+    .footer p.footer-email {
+        font-size: 0.8rem !important;
+        white-space: normal;
+        word-break: break-all;
+    }
+}
+
 .footer-link {
     color: #94A3B8 !important;
     font-size: 0.875rem;
@@ -1399,9 +1437,9 @@ textarea {
     align-items: center;
     background-color: #25D366;
     color: #FFFFFF !important;
-    padding: 13px 16px;
+    padding: 10px 13px;
     border-radius: 8px 0 0 8px;
-    box-shadow: -3px 5px 16px rgba(37, 211, 102, 0.4);
+    box-shadow: -3px 5px 14px rgba(37, 211, 102, 0.4);
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
@@ -1410,20 +1448,20 @@ textarea {
 }
 
 .side-wa-btn i {
-    font-size: 26px;
+    font-size: 22px;
     flex-shrink: 0;
 }
 
 .side-wa-badge {
     position: absolute;
-    top: -5px;
-    left: -5px;
+    top: -4px;
+    left: -4px;
     background-color: #E53E3E;
     color: #FFFFFF;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1438,7 +1476,7 @@ textarea {
     max-width: 0;
     opacity: 0;
     white-space: nowrap;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     margin-left: 0;
@@ -1446,47 +1484,47 @@ textarea {
 }
 
 .side-wa-btn:hover {
-    padding-left: 18px;
-    padding-right: 20px;
-    box-shadow: -5px 7px 22px rgba(37, 211, 102, 0.55);
+    padding-left: 14px;
+    padding-right: 17px;
+    box-shadow: -5px 7px 20px rgba(37, 211, 102, 0.55);
     color: #FFFFFF !important;
 }
 
 .side-wa-btn:hover .side-wa-text {
     max-width: 140px;
     opacity: 1;
-    margin-left: 10px;
+    margin-left: 8px;
 }
 
 @keyframes wa-side-attention {
 
     0%,
     100% {
-        box-shadow: -3px 5px 16px rgba(37, 211, 102, 0.4);
+        box-shadow: -3px 5px 14px rgba(37, 211, 102, 0.4);
     }
 
     50% {
-        box-shadow: -5px 8px 24px rgba(37, 211, 102, 0.75);
+        box-shadow: -5px 8px 22px rgba(37, 211, 102, 0.75);
     }
 }
 
 @media (max-width: 576px) {
     .side-wa-btn {
         top: 45%;
-        padding: 10px 13px;
+        padding: 8px 11px;
         border-radius: 6px 0 0 6px;
     }
 
     .side-wa-btn i {
-        font-size: 22px;
+        font-size: 19px;
     }
 
     .side-wa-badge {
-        width: 18px;
-        height: 18px;
-        font-size: 0.62rem;
-        top: -4px;
-        left: -4px;
+        width: 16px;
+        height: 16px;
+        font-size: 0.58rem;
+        top: -3px;
+        left: -3px;
     }
 }
 
@@ -1496,15 +1534,15 @@ textarea {
     position: fixed;
     bottom: 24px;
     left: 24px;
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     background-color: #25D366;
     color: #FFFFFF !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
+    font-size: 22px;
     box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
     z-index: 1030;
     text-decoration: none;
@@ -1524,10 +1562,10 @@ textarea {
     right: -3px;
     background-color: #E53E3E;
     color: #FFFFFF;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1552,15 +1590,15 @@ textarea {
     .floating-wa-btn {
         bottom: 16px;
         left: 16px;
-        width: 46px;
-        height: 46px;
-        font-size: 23px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
     }
 
     .floating-wa-badge {
-        width: 18px;
-        height: 18px;
-        font-size: 0.68rem;
+        width: 16px;
+        height: 16px;
+        font-size: 0.62rem;
     }
 }
 
@@ -1592,12 +1630,29 @@ textarea {
     background: transparent;
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15));
     transition: transform 0.25s ease;
+    animation: ai-float-pulse 3s infinite ease-in-out;
 }
 
 .floating-ai-btn:hover {
-    transform: scale(1.08);
+    transform: none;
     background: transparent;
     box-shadow: none;
+}
+
+.floating-ai-btn:hover img {
+    transform: scale(1.06);
+    animation-play-state: paused;
+}
+
+@keyframes ai-float-pulse {
+    0%,
+    100% {
+        transform: translateY(0) scale(0.93);
+    }
+
+    50% {
+        transform: translateY(-4px) scale(1.02);
+    }
 }
 
 @keyframes ai-subtle-glow {
@@ -2134,16 +2189,32 @@ textarea {
     /* Side WhatsApp Button Position Tweak */
     .side-wa-btn {
         top: 38%;
-        padding: 8px 11px;
+        padding: 7px 10px;
         border-radius: 6px 0 0 6px;
     }
 
     .side-wa-btn i {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     /* Floating Speech Bubbles */
     .widget-speech-bubble {
         display: none !important;
     }
+}
+
+/* Contact Page Specific — Hide floating WhatsApp, AI chatbot, and back-to-top */
+body.contact-page .side-wa-btn,
+body.contact-page .floating-ai-btn,
+body.contact-page .floating-widget-container,
+body.contact-page .ai-chat-panel,
+body.contact-page .floating-wa-btn,
+body.contact-page .back-to-top,
+.contact-page .side-wa-btn,
+.contact-page .floating-ai-btn,
+.contact-page .floating-widget-container,
+.contact-page .ai-chat-panel,
+.contact-page .floating-wa-btn,
+.contact-page .back-to-top {
+    display: none !important;
 }

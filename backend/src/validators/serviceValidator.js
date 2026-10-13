@@ -15,9 +15,11 @@ export const createServiceSchema = z.object({
     .trim()
     .min(1, 'Description cannot be empty'),
   image: z
-    .string({ required_error: 'Image is required' })
+    .string()
     .trim()
-    .min(1, 'Image cannot be empty'),
+    .min(1, 'Image cannot be empty')
+    .default('img/property-1.jpg')
+    .optional(),
   isActive: z.boolean().optional(),
 });
 

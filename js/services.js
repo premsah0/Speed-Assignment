@@ -11,10 +11,21 @@ function escapeHtml(str) {
     return div.innerHTML;
 }
 
+function getServicesApiBase() {
+    if (window.ASSIGNMENTGHAR_API_URL) {
+        return window.ASSIGNMENTGHAR_API_URL.replace(/\/+$/, '');
+    }
+    const isLocal = window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname === '0.0.0.0' ||
+                    window.location.protocol === 'file:';
+    return isLocal ? 'http://localhost:5001/api' : '/api';
+}
+
 function formatImageUrl(url) {
     if (!url) return 'img/property-1.jpg';
     if (url.startsWith('/uploads/')) {
-        const apiOrigin = (window.ASSIGNMENTGHAR_API_URL || '/api').replace(/\/api\/?$/, '');
+        const apiOrigin = getServicesApiBase().replace(/\/api\/?$/, '');
         return apiOrigin + url;
     }
     return url;
@@ -65,7 +76,7 @@ async function renderServices() {
     if (servicesContainer) servicesContainer.innerHTML = loadingHTML;
 
     let services = [];
-    const API_BASE = window.ASSIGNMENTGHAR_API_URL || '/api';
+    const API_BASE = getServicesApiBase();
 
     try {
         const response = await fetch(`${API_BASE}/services`);

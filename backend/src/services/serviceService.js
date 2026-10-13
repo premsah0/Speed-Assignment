@@ -38,7 +38,7 @@ export const createServiceRecord = async (data) => {
       slug: data.slug,
       title: data.title,
       description: data.description,
-      image: data.image,
+      image: data.image || 'img/property-1.jpg',
       isActive: data.isActive !== undefined ? data.isActive : true,
     },
   });

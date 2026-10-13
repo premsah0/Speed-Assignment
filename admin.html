@@ -81,7 +81,7 @@
         }
 
         .admin-sidebar-brand img {
-            height: 36px;
+            height: 58px;
             width: auto;
             max-width: 100%;
             object-fit: contain;
@@ -397,7 +397,7 @@
             <div>
                 <div class="admin-sidebar-header">
                     <a href="admin.html" class="admin-sidebar-brand">
-                        <img src="img/logo.png" alt="Speed Assignment" style="height: 36px; width: auto; max-width: 100%;">
+                        <img src="img/logo.png" alt="Speed Assignment" style="height: 58px; width: auto; max-width: 100%;">
                     </a>
                 </div>
                 <ul class="admin-sidebar-nav">
@@ -861,10 +861,23 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="service-image-file" class="form-label fw-bold small text-muted">Service Image <span class="text-danger">*</span></label>
+                            <label for="service-image-file" class="form-label fw-bold small text-muted">Service Image</label>
                             <input type="file" class="form-control form-control-sm" id="service-image-file" accept="image/*" style="border-radius: 2px;">
                             <input type="hidden" id="service-image-url" value="">
-                            
+
+                            <div class="mt-2 d-flex align-items-center gap-2">
+                                <span class="small text-muted" style="font-size: 0.75rem; white-space: nowrap;">Or preset:</span>
+                                <select class="form-select form-select-sm" id="service-preset-image" style="font-size: 0.8rem; border-radius: 2px;">
+                                    <option value="">-- Choose preset image --</option>
+                                    <option value="img/property-1.jpg">Preset 1 - Essay Writing</option>
+                                    <option value="img/property-2.jpg">Preset 2 - Research Paper &amp; Thesis</option>
+                                    <option value="img/property-3.jpg">Preset 3 - Programming &amp; Coding</option>
+                                    <option value="img/property-4.jpg">Preset 4 - Dissertation &amp; Master's</option>
+                                    <option value="img/property-5.jpg">Preset 5 - Homework &amp; Coursework</option>
+                                    <option value="img/property-6.jpg">Preset 6 - Case Study Analysis</option>
+                                </select>
+                            </div>
+
                             <div id="service-image-preview-wrapper" class="mt-2 p-2 bg-light border rounded" style="display: none;">
                                 <div class="d-flex align-items-center gap-3">
                                     <img id="service-image-preview" src="" alt="Service Image Preview" style="width: 54px; height: 54px; object-fit: cover; border-radius: 4px; border: 1px solid var(--admin-border);">
@@ -875,6 +888,7 @@
                                 </div>
                             </div>
                             <div id="service-image-error" class="text-danger small mt-1" style="display: none;"></div>
+                            <div class="form-text text-muted" style="font-size: 0.75rem;">Upload an image (under 1MB recommended), choose a preset, or leave empty to use default (img/property-1.jpg).</div>
                         </div>
 
                         <div class="form-check form-switch mb-2">
@@ -984,7 +998,10 @@
             var currentLimit = 20;
             var currentStatusFilter = '';
             var totalPages = 1;
-            var API_BASE = window.ASSIGNMENTGHAR_API_URL || '/api';
+            var defaultApiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0' || window.location.protocol === 'file:')
+                ? 'http://localhost:5001/api'
+                : '/api';
+            var API_BASE = (window.ASSIGNMENTGHAR_API_URL || defaultApiBase).replace(/\/+$/, '');
 
             // DOM Elements
             var filterStatusSelect = document.getElementById('filter-status');
@@ -1312,9 +1329,28 @@
                     body: formData
                 });
 
-                var result = await response.json();
-                if (!response.ok || !result.success) {
-                    throw new Error(result.message || 'Image upload failed.');
+                if (response.status === 401) {
+                    localStorage.removeItem('assignmentghar_admin_token');
+                    localStorage.removeItem('assignmentghar_admin_user');
+                    window.location.href = 'admin-login.html';
+                    throw new Error('Session expired. Please log in again.');
+                }
+
+                if (response.status === 413) {
+                    throw new Error('Image file is too large for the web server (HTTP 413 Request Entity Too Large). The Nginx server currently limits uploads to 1MB. Please choose an image smaller than 1MB or choose a preset template.');
+                }
+
+                var contentType = response.headers.get('content-type') || '';
+                var result;
+                if (contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    var errorHtml = await response.text();
+                    throw new Error('Server returned an unexpected response (status ' + response.status + '). Please try again or choose a preset image.');
+                }
+
+                if (!response.ok || !result || !result.success) {
+                    throw new Error((result && result.message) || 'Image upload failed.');
                 }
 
                 return result.data.url;
@@ -1340,6 +1376,7 @@
             var inputServiceDesc = document.getElementById('service-description');
             var inputServiceFile = document.getElementById('service-image-file');
             var inputServiceUrl = document.getElementById('service-image-url');
+            var inputServicePreset = document.getElementById('service-preset-image');
             var serviceImagePreviewWrapper = document.getElementById('service-image-preview-wrapper');
             var serviceImagePreview = document.getElementById('service-image-preview');
             var serviceImageName = document.getElementById('service-image-name');
@@ -1348,10 +1385,33 @@
             var serviceSubmitBtn = document.getElementById('service-submit-btn');
             var inputServiceActive = document.getElementById('service-is-active');
 
+            // Preset selection listener for Service Image
+            if (inputServicePreset) {
+                inputServicePreset.addEventListener('change', function () {
+                    serviceImageError.style.display = 'none';
+                    serviceImageError.textContent = '';
+                    var selectedPreset = inputServicePreset.value;
+                    if (selectedPreset) {
+                        inputServiceFile.value = '';
+                        inputServiceUrl.value = selectedPreset;
+                        serviceImagePreview.src = selectedPreset;
+                        serviceImageName.textContent = selectedPreset.split('/').pop() || 'Preset Image';
+                        serviceImageStatus.textContent = 'Preset template image selected';
+                        serviceImagePreviewWrapper.style.display = 'block';
+                    } else if (!inputServiceFile.value) {
+                        inputServiceUrl.value = '';
+                        serviceImagePreviewWrapper.style.display = 'none';
+                    }
+                });
+            }
+
             // File selection listener for Service Image
             inputServiceFile.addEventListener('change', function () {
                 serviceImageError.style.display = 'none';
                 serviceImageError.textContent = '';
+                if (inputServicePreset) {
+                    inputServicePreset.value = '';
+                }
                 var file = inputServiceFile.files[0];
                 if (file) {
                     if (!file.type || !file.type.startsWith('image/')) {
@@ -1500,6 +1560,15 @@
                 inputServiceUrl.value = service.image || '';
                 inputServiceActive.checked = service.isActive;
 
+                if (inputServicePreset) {
+                    var presetOptions = Array.from(inputServicePreset.options).map(function (o) { return o.value; });
+                    if (service.image && presetOptions.includes(service.image)) {
+                        inputServicePreset.value = service.image;
+                    } else {
+                        inputServicePreset.value = '';
+                    }
+                }
+
                 if (service.image) {
                     serviceImagePreview.src = formatImageUrl(service.image);
                     serviceImageName.textContent = service.image.split('/').pop() || 'Saved Image';
@@ -1514,6 +1583,9 @@
                 serviceForm.reset();
                 inputServiceEditId.value = '';
                 inputServiceUrl.value = '';
+                if (inputServicePreset) {
+                    inputServicePreset.value = '';
+                }
                 inputServiceActive.checked = true;
                 serviceModalAlert.style.display = 'none';
                 serviceModalAlert.textContent = '';
@@ -1545,7 +1617,7 @@
                     return;
                 }
 
-                var finalImageUrl = inputServiceUrl.value.trim();
+                var finalImageUrl = inputServiceUrl.value.trim() || 'img/property-1.jpg';
 
                 // If new image file is chosen, upload it first
                 if (inputServiceFile.files && inputServiceFile.files[0]) {
@@ -1562,10 +1634,7 @@
                 }
 
                 if (!finalImageUrl) {
-                    serviceSubmitBtn.disabled = false;
-                    serviceSubmitBtn.textContent = 'Save Service';
-                    showModalAlert('Please select an image file for the service.');
-                    return;
+                    finalImageUrl = 'img/property-1.jpg';
                 }
 
                 var method = editId ? 'PATCH' : 'POST';
@@ -1598,17 +1667,20 @@
                         return;
                     }
 
-                    var result = await response.json();
-                    if (response.ok && result.success) {
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (response.ok && result && result.success) {
                         serviceModal.hide();
                         showToast(editId ? 'Service updated successfully.' : 'New service created successfully.', 'success');
                         fetchServices();
                     } else {
-                        showModalAlert(result.message || 'Failed to save service.');
+                        var errMsg = (result && result.message) || ('Failed to save service (Server status ' + response.status + ').');
+                        showModalAlert(errMsg);
                     }
                 } catch (err) {
                     console.error('Save service error:', err);
-                    showModalAlert('Network error. Failed to connect to server.');
+                    showModalAlert('Network error: ' + (err.message || 'Failed to connect to server.'));
                 } finally {
                     serviceSubmitBtn.disabled = false;
                     serviceSubmitBtn.textContent = 'Save Service';
@@ -1633,12 +1705,14 @@
                         return;
                     }
 
-                    var result = await response.json();
-                    if (response.ok && result.success) {
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (response.ok && result && result.success) {
                         showToast('Service status updated.', 'success');
                         fetchServices();
                     } else {
-                        showToast(result.message || 'Failed to update service status.', 'danger');
+                        showToast((result && result.message) || 'Failed to update service status.', 'danger');
                     }
                 } catch (err) {
                     console.error('Toggle service status error:', err);
@@ -1667,12 +1741,14 @@
                         return;
                     }
 
-                    var result = await response.json();
-                    if (response.ok && result.success) {
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (response.ok && result && result.success) {
                         showToast('Service deleted successfully.', 'success');
                         fetchServices();
                     } else {
-                        showToast(result.message || 'Failed to delete service.', 'danger');
+                        showToast((result && result.message) || 'Failed to delete service.', 'danger');
                     }
                 } catch (err) {
                     console.error('Delete service error:', err);
@@ -1961,17 +2037,20 @@
                         return;
                     }
 
-                    var result = await response.json();
-                    if (response.ok && result.success) {
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (response.ok && result && result.success) {
                         reviewModal.hide();
                         showToast(editId ? 'Review updated successfully.' : 'New review created successfully.', 'success');
                         fetchReviews();
                     } else {
-                        showReviewModalAlert(result.message || 'Failed to save review.');
+                        var errMsg = (result && result.message) || ('Failed to save review (Server status ' + response.status + ').');
+                        showReviewModalAlert(errMsg);
                     }
                 } catch (err) {
                     console.error('Save review error:', err);
-                    showReviewModalAlert('Network error. Failed to connect to server.');
+                    showReviewModalAlert('Network error: ' + (err.message || 'Failed to connect to server.'));
                 } finally {
                     reviewSubmitBtn.disabled = false;
                     reviewSubmitBtn.textContent = 'Save Review';
@@ -1996,12 +2075,14 @@
                         return;
                     }
 
-                    var result = await response.json();
-                    if (response.ok && result.success) {
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (response.ok && result && result.success) {
                         showToast('Review status updated.', 'success');
                         fetchReviews();
                     } else {
-                        showToast(result.message || 'Failed to update review status.', 'danger');
+                        showToast((result && result.message) || 'Failed to update review status.', 'danger');
                     }
                 } catch (err) {
                     console.error('Toggle review status error:', err);
@@ -2030,12 +2111,14 @@
                         return;
                     }
 
-                    var result = await response.json();
-                    if (response.ok && result.success) {
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
+
+                    if (response.ok && result && result.success) {
                         showToast('Review deleted successfully.', 'success');
                         fetchReviews();
                     } else {
-                        showToast(result.message || 'Failed to delete review.', 'danger');
+                        showToast((result && result.message) || 'Failed to delete review.', 'danger');
                     }
                 } catch (err) {
                     console.error('Delete review error:', err);

@@ -12,10 +12,21 @@
         return div.innerHTML;
     }
 
+    function getReviewsApiBase() {
+        if (window.ASSIGNMENTGHAR_API_URL) {
+            return window.ASSIGNMENTGHAR_API_URL.replace(/\/+$/, '');
+        }
+        const isLocal = window.location.hostname === 'localhost' ||
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname === '0.0.0.0' ||
+                        window.location.protocol === 'file:';
+        return isLocal ? 'http://localhost:5001/api' : '/api';
+    }
+
     function formatImageUrl(url) {
         if (!url) return 'img/testimonial-1.jpg';
         if (url.startsWith('/uploads/')) {
-            const apiOrigin = (window.ASSIGNMENTGHAR_API_URL || '/api').replace(/\/api\/?$/, '');
+            const apiOrigin = getReviewsApiBase().replace(/\/api\/?$/, '');
             return apiOrigin + url;
         }
         return url;
@@ -44,7 +55,7 @@
         const carouselElems = document.querySelectorAll('.testimonial-carousel');
         if (!carouselElems || carouselElems.length === 0) return;
 
-        const API_BASE = window.ASSIGNMENTGHAR_API_URL || '/api';
+        const API_BASE = getReviewsApiBase();
 
         try {
             const response = await fetch(`${API_BASE}/reviews`);

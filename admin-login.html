@@ -118,7 +118,7 @@
 <body>
     <div class="admin-login-card">
         <div class="text-center mb-4">
-            <img src="img/logo.png" alt="Speed Assignment" style="height: 48px; width: auto; max-width: 100%;" class="mb-2">
+            <img src="img/logo.png" alt="Speed Assignment" style="height: 60px; width: auto; max-width: 100%;" class="mb-2">
             <p class="admin-subtitle">Internal Portal • Admin Login</p>
         </div>
 
@@ -179,7 +179,11 @@
                     submitBtn.innerHTML = 'Logging in...';
                 }
 
-                var API_URL = window.ASSIGNMENTGHAR_API_URL || '/api/admin/login';
+                var defaultApiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0' || window.location.protocol === 'file:')
+                    ? 'http://localhost:5001/api'
+                    : '/api';
+                var API_BASE = (window.ASSIGNMENTGHAR_API_URL || defaultApiBase).replace(/\/+$/, '');
+                var API_URL = API_BASE + '/admin/login';
 
                 try {
                     var response = await fetch(API_URL, {
@@ -193,9 +197,10 @@
                         })
                     });
 
-                    var result = await response.json();
+                    var contentType = response.headers.get('content-type') || '';
+                    var result = contentType.includes('application/json') ? await response.json() : null;
 
-                    if (response.status === 200 && result.success && result.data && result.data.token) {
+                    if (response.status === 200 && result && result.success && result.data && result.data.token) {
                         localStorage.setItem('assignmentghar_admin_token', result.data.token);
                         if (result.data.admin) {
                             localStorage.setItem('assignmentghar_admin_user', JSON.stringify(result.data.admin));
@@ -204,7 +209,7 @@
                     } else if (response.status === 401) {
                         showFeedback('Invalid email or password.', 'danger');
                     } else {
-                        var errorMsg = result.message || 'Login failed. Please verify your credentials.';
+                        var errorMsg = (result && result.message) || ('Login failed (Server status ' + response.status + ').');
                         showFeedback(errorMsg, 'danger');
                     }
                 } catch (err) {

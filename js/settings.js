@@ -11,7 +11,10 @@
     }
 
     async function applyPublicSettings() {
-        const API_BASE = window.ASSIGNMENTGHAR_API_URL || '/api';
+        const defaultApiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0' || window.location.protocol === 'file:')
+            ? 'http://localhost:5001/api'
+            : '/api';
+        const API_BASE = (window.ASSIGNMENTGHAR_API_URL || defaultApiBase).replace(/\/+$/, '');
 
         try {
             const response = await fetch(`${API_BASE}/settings`);
