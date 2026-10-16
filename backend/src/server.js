@@ -1,10 +1,12 @@
 import express from 'express';
+import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { config } from './config/env.js';
 import apiRoutes from './routes/index.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { initSocketServer } from './socket/supportSocket.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -62,12 +64,15 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Start Server with Error Handling
-const server = app.listen(config.port, () => {
+const httpServer = createServer(app);
+const io = initSocketServer(httpServer);
+
+httpServer.listen(config.port, () => {
   console.log(`[Speed Assignment Backend] Server running on http://localhost:${config.port}`);
   console.log(`[Speed Assignment Backend] Environment: ${config.nodeEnv}`);
 });
 
-server.on('error', (err) => {
+httpServer.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`[Speed Assignment Backend] Port ${config.port} is already in use.`);
     console.error(`Note: On macOS, ControlCenter / AirPlay Receiver often uses port 5000. You can change PORT in .env or disable AirPlay Receiver in macOS System Settings.`);

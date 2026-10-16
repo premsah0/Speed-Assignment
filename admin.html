@@ -22,6 +22,9 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Live Support Stylesheet -->
+    <link href="css/live-support.css" rel="stylesheet">
+
     <style>
         :root {
             --admin-navy: #081E36;
@@ -432,6 +435,13 @@
                         </a>
                     </li>
                     <li class="admin-sidebar-item">
+                        <a href="#live-support-section" class="admin-sidebar-link" id="nav-live-support">
+                            <i class="bi bi-chat-dots"></i>
+                            <span>Live Chat with Experts</span>
+                            <span class="badge bg-danger ms-auto d-none" id="admin-sidebar-support-badge">0</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar-item">
                         <a href="#chatbot-section" class="admin-sidebar-link">
                             <i class="bi bi-robot"></i>
                             <span>Chatbot Config</span>
@@ -732,6 +742,124 @@
                 </form>
             </section>
 
+            <!-- Live Chat with Experts Inbox Section -->
+            <section class="admin-section-card" id="live-support-section">
+                <div class="admin-section-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <h2 class="admin-section-title">
+                            <i class="bi bi-chat-dots me-2" style="color: var(--admin-emerald);"></i>Live Chat with Experts
+                        </h2>
+                        <span class="badge bg-secondary" id="admin-socket-status-badge">
+                            <i class="bi bi-broadcast me-1"></i>Connecting...
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" id="btn-refresh-support-inbox" title="Refresh conversation list" style="border-radius: 2px;">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Split-Pane Live Chat Manager -->
+                <div class="admin-support-container">
+                    <!-- Left: Conversation list & bulk actions -->
+                    <div class="admin-support-list-pane">
+                        <div class="admin-support-search-bar">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0" id="support-search-input" placeholder="Search by name or phone..." style="box-shadow: none;">
+                            </div>
+                        </div>
+                        <div class="admin-support-bulk-bar">
+                            <div class="form-check mb-0 d-flex align-items-center">
+                                <input class="form-check-input" type="checkbox" id="support-select-all" style="cursor: pointer;">
+                                <label class="form-check-label small fw-semibold ms-2 mb-0" for="support-select-all" style="cursor: pointer;">Select All</label>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" id="btn-delete-selected-convs" style="font-size: 0.78rem; padding: 3px 10px; border-radius: 2px;" disabled>
+                                <i class="bi bi-trash3 me-1"></i>Delete Selected (<span id="support-selected-count">0</span>)
+                            </button>
+                        </div>
+
+                        <!-- States for List -->
+                        <div id="support-list-loading" class="text-center py-4">
+                            <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+                            <p class="small text-muted mt-2 mb-0">Loading conversations...</p>
+                        </div>
+                        <div id="support-list-error" class="alert alert-danger py-2 px-3 m-3 small" style="display: none; border-radius: 2px;">
+                            <span id="support-list-error-msg">Failed to load conversations.</span>
+                            <button class="btn btn-sm btn-link p-0 text-danger fw-bold ms-1" id="support-list-retry-btn">Retry</button>
+                        </div>
+                        <div id="support-list-empty" class="text-center py-5 text-muted px-3" style="display: none;">
+                            <i class="bi bi-chat-left-dots display-6 d-block mb-2 text-muted"></i>
+                            <p class="small mb-0 fw-semibold">No conversations found.</p>
+                        </div>
+
+                        <!-- Conversation List Container: Renders checkboxes, name, and phone number only -->
+                        <ul class="admin-support-conv-list" id="support-conversations-ul" style="display: none;">
+                            <!-- Populated dynamically via JS -->
+                        </ul>
+                    </div>
+
+                    <!-- Right: Active Conversation Thread -->
+                    <div class="admin-support-thread-pane">
+                        <!-- Unselected Placeholder State -->
+                        <div class="admin-support-empty-state" id="support-thread-unselected">
+                            <i class="bi bi-chat-square-text display-5 mb-3 text-muted"></i>
+                            <h6 class="fw-bold text-dark mb-1">No Conversation Selected</h6>
+                            <p class="small text-muted mb-0">Select a customer from the left to view the conversation and reply.</p>
+                        </div>
+
+                        <!-- Active Conversation Thread -->
+                        <div id="support-thread-active" style="display: none; height: 100%; flex-direction: column;">
+                            <!-- Header with metadata & single resolve button -->
+                            <div class="admin-support-thread-header">
+                                <div class="admin-support-customer-meta">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h5 id="support-active-customer-name" class="mb-0">Customer</h5>
+                                        <span id="support-active-status-badge" class="badge bg-secondary" style="font-size: 0.7rem; display: none;">Ended</span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3 mt-1 flex-wrap">
+                                        <span id="support-active-phone" style="display: none;"><i class="bi bi-telephone text-success"></i> <span class="phone-val"></span></span>
+                                        <span id="support-active-email" style="display: none;"><i class="bi bi-envelope text-primary"></i> <span class="email-val"></span></span>
+                                        <span id="support-active-id" class="text-muted"><i class="bi bi-hash"></i> <span class="id-val"></span></span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button class="btn btn-sm btn-outline-success" id="support-btn-quick-resolve" title="Resolve Conversation" style="border-radius: 2px;">
+                                        <i class="bi bi-check2-circle me-1"></i>Resolve
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Messages scroll body -->
+                            <div class="admin-support-messages-body" id="support-thread-messages">
+                                <!-- Messages rendered dynamically -->
+                            </div>
+
+                            <!-- Customer typing banner -->
+                            <div id="support-customer-typing-banner" class="px-3 py-1 bg-white small text-muted fst-italic" style="display: none; border-top: 1px dashed #E2E8F0;">
+                                <i class="bi bi-pencil-fill me-1 text-success"></i> Customer is typing...
+                            </div>
+
+                            <!-- Reply Composer -->
+                            <div class="admin-support-composer" id="support-composer-container">
+                                <form id="support-reply-form" class="d-flex gap-2 align-items-end">
+                                    <div class="flex-grow-1">
+                                        <textarea id="support-reply-textarea" class="form-control form-control-sm" rows="2" placeholder="Type your reply to the customer... (Enter to send)" style="resize: none; font-size: 0.85rem; border-radius: 2px;"></textarea>
+                                    </div>
+                                    <button type="submit" id="support-reply-send-btn" class="btn text-white px-3" style="background-color: var(--admin-emerald); font-weight: 600; height: 58px; border-radius: 2px;" disabled>
+                                        <i class="bi bi-send-fill me-1"></i>Send
+                                    </button>
+                                </form>
+                            </div>
+                            <div id="support-conversation-ended-banner" class="alert alert-secondary text-center py-2 px-3 m-3 small mb-0 fw-semibold" style="display: none; border-radius: 2px;">
+                                <i class="bi bi-lock me-1"></i>This conversation has ended. No further messages can be sent.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Chatbot Configuration Section -->
             <section class="admin-section-card" id="chatbot-section">
                 <div class="admin-section-header">
@@ -967,6 +1095,9 @@
 
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Socket.IO Client for Real-Time Live Support -->
+    <script src="js/socket.io.min.js"></script>
 
     <!-- Script Logic -->
     <script>
@@ -2431,6 +2562,755 @@
 
             // Initial Fetch Chatbot Config
             fetchChatbotConfig();
+
+            // =========================================================================
+            // 11. Live Chat with Experts - Admin Inbox Logic
+            // =========================================================================
+            var supportConversations = [];
+            var activeSupportConv = null;
+            var supportSearchQuery = '';
+            var selectedSupportConvIds = new Set();
+            var adminSocket = null;
+            var adminTypingTimer = null;
+            var isAdminTyping = false;
+
+            // DOM Elements
+            var socketStatusBadge = document.getElementById('admin-socket-status-badge');
+            var btnRefreshSupport = document.getElementById('btn-refresh-support-inbox');
+            var supportSearchInput = document.getElementById('support-search-input');
+            var supportSelectAll = document.getElementById('support-select-all');
+            var btnDeleteSelected = document.getElementById('btn-delete-selected-convs');
+            var selectedCountSpan = document.getElementById('support-selected-count');
+            var supportListLoading = document.getElementById('support-list-loading');
+            var supportListError = document.getElementById('support-list-error');
+            var supportListErrorMsg = document.getElementById('support-list-error-msg');
+            var supportListRetryBtn = document.getElementById('support-list-retry-btn');
+            var supportListEmpty = document.getElementById('support-list-empty');
+            var supportConversationsUl = document.getElementById('support-conversations-ul');
+            var supportThreadUnselected = document.getElementById('support-thread-unselected');
+            var supportThreadActive = document.getElementById('support-thread-active');
+            var supportActiveName = document.getElementById('support-active-customer-name');
+            var supportActiveStatusBadge = document.getElementById('support-active-status-badge');
+            var supportActiveEmail = document.getElementById('support-active-email');
+            var supportActivePhone = document.getElementById('support-active-phone');
+            var supportActiveId = document.getElementById('support-active-id');
+            var supportBtnQuickResolve = document.getElementById('support-btn-quick-resolve');
+            var supportThreadMessages = document.getElementById('support-thread-messages');
+            var supportCustomerTypingBanner = document.getElementById('support-customer-typing-banner');
+            var supportComposerContainer = document.getElementById('support-composer-container');
+            var supportEndedBanner = document.getElementById('support-conversation-ended-banner');
+            var supportReplyForm = document.getElementById('support-reply-form');
+            var supportReplyTextarea = document.getElementById('support-reply-textarea');
+            var supportReplySendBtn = document.getElementById('support-reply-send-btn');
+            var sidebarSupportBadge = document.getElementById('admin-sidebar-support-badge');
+
+            // Format helpers
+            function escapeSupportHtml(str) {
+                if (!str) return '';
+                var div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function formatSupportTime(isoString) {
+                if (!isoString) return '';
+                try {
+                    var d = new Date(isoString);
+                    var now = new Date();
+                    var isToday = d.toDateString() === now.toDateString();
+                    var timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    if (isToday) return timeStr;
+                    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + timeStr;
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            function updateSidebarSupportBadge() {
+                var totalUnread = supportConversations.reduce(function (sum, c) {
+                    return sum + (c.unreadAdminCount || 0);
+                }, 0);
+
+                if (sidebarSupportBadge) {
+                    if (totalUnread > 0) {
+                        sidebarSupportBadge.textContent = totalUnread > 99 ? '99+' : totalUnread;
+                        sidebarSupportBadge.classList.remove('d-none');
+                    } else {
+                        sidebarSupportBadge.classList.add('d-none');
+                    }
+                }
+            }
+
+            function getFilteredConversations() {
+                return supportConversations.filter(function (c) {
+                    if (supportSearchQuery) {
+                        var q = supportSearchQuery.toLowerCase();
+                        var name = (c.customerName || '').toLowerCase();
+                        var phone = (c.customerPhone || '').toLowerCase();
+                        return name.includes(q) || phone.includes(q);
+                    }
+                    return true;
+                });
+            }
+
+            function updateBulkDeleteUI() {
+                var count = selectedSupportConvIds.size;
+                if (selectedCountSpan) selectedCountSpan.textContent = count;
+                if (btnDeleteSelected) btnDeleteSelected.disabled = count === 0;
+
+                if (supportSelectAll) {
+                    var visible = getFilteredConversations();
+                    var visibleIds = visible.map(function (c) { return c.id; });
+                    if (visibleIds.length > 0 && visibleIds.every(function (id) { return selectedSupportConvIds.has(id); })) {
+                        supportSelectAll.checked = true;
+                        supportSelectAll.indeterminate = false;
+                    } else if (visibleIds.some(function (id) { return selectedSupportConvIds.has(id); })) {
+                        supportSelectAll.checked = false;
+                        supportSelectAll.indeterminate = true;
+                    } else {
+                        supportSelectAll.checked = false;
+                        supportSelectAll.indeterminate = false;
+                    }
+                }
+            }
+
+            // Socket.IO Admin Connection
+            function initAdminSupportSocket() {
+                if (!window.io) {
+                    if (socketStatusBadge) {
+                        socketStatusBadge.className = 'badge bg-secondary';
+                        socketStatusBadge.innerHTML = '<i class="bi bi-cloud-slash me-1"></i>REST Mode';
+                    }
+                    return;
+                }
+
+                var socketServerUrl = API_BASE.replace(/\/api\/?$/, '') || window.location.origin;
+
+                adminSocket = window.io(socketServerUrl, {
+                    path: '/socket.io',
+                    transports: ['websocket', 'polling'],
+                    auth: {
+                        token: token
+                    },
+                    reconnection: true,
+                    reconnectionAttempts: Infinity,
+                    reconnectionDelay: 1000,
+                    reconnectionDelayMax: 5000
+                });
+
+                adminSocket.on('connect', function () {
+                    if (socketStatusBadge) {
+                        socketStatusBadge.className = 'badge bg-success';
+                        socketStatusBadge.innerHTML = '<i class="bi bi-broadcast me-1"></i>Live Connected';
+                    }
+                    if (activeSupportConv && activeSupportConv.id) {
+                        adminSocket.emit('admin:join_conversation', { conversationId: activeSupportConv.id });
+                    }
+                });
+
+                adminSocket.on('disconnect', function () {
+                    if (socketStatusBadge) {
+                        socketStatusBadge.className = 'badge bg-warning text-dark';
+                        socketStatusBadge.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Reconnecting...';
+                    }
+                });
+
+                adminSocket.on('connect_error', function () {
+                    if (socketStatusBadge) {
+                        socketStatusBadge.className = 'badge bg-danger';
+                        socketStatusBadge.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Connection Lost';
+                    }
+                });
+
+                // Real-time conversation updates
+                adminSocket.on('admin:conversation_updated', function (data) {
+                    if (!data || !data.conversation) return;
+                    var conv = data.conversation;
+                    var idx = supportConversations.findIndex(function (c) { return c.id === conv.id; });
+                    if (idx >= 0) {
+                        supportConversations[idx] = Object.assign({}, supportConversations[idx], conv);
+                        var updatedItem = supportConversations.splice(idx, 1)[0];
+                        supportConversations.unshift(updatedItem);
+                    } else {
+                        supportConversations.unshift(conv);
+                    }
+
+                    renderSupportConversationList();
+                    updateSidebarSupportBadge();
+
+                    if (activeSupportConv && activeSupportConv.id === conv.id) {
+                        activeSupportConv.status = conv.status;
+                        syncActiveConversationEndedState(conv.status === 'RESOLVED' || conv.status === 'CLOSED');
+                    }
+                });
+
+                // Real-time conversations deleted
+                adminSocket.on('admin:conversations_deleted', function (data) {
+                    if (!data || !data.ids || !Array.isArray(data.ids)) return;
+                    var deletedSet = new Set(data.ids);
+                    supportConversations = supportConversations.filter(function (c) {
+                        return !deletedSet.has(c.id);
+                    });
+                    data.ids.forEach(function (id) { selectedSupportConvIds.delete(id); });
+
+                    if (activeSupportConv && deletedSet.has(activeSupportConv.id)) {
+                        activeSupportConv = null;
+                        supportThreadActive.style.display = 'none';
+                        supportThreadUnselected.style.display = 'flex';
+                    }
+
+                    renderSupportConversationList();
+                    updateBulkDeleteUI();
+                    updateSidebarSupportBadge();
+                });
+
+                // Real-time new message
+                adminSocket.on('message:new', function (msg) {
+                    if (!msg) return;
+                    if (activeSupportConv && activeSupportConv.id === msg.conversationId) {
+                        appendAdminMessageBubble(msg);
+                        scrollAdminThreadToBottom();
+
+                        if (msg.senderType === 'CUSTOMER') {
+                            markAdminConversationRead(msg.conversationId);
+                        }
+                    }
+                });
+
+                // Customer typing indicator
+                adminSocket.on('customer:typing', function (data) {
+                    if (!supportCustomerTypingBanner) return;
+                    if (activeSupportConv && activeSupportConv.id === data.conversationId) {
+                        if (data.isTyping) {
+                            supportCustomerTypingBanner.style.display = 'block';
+                            scrollAdminThreadToBottom();
+                        } else {
+                            supportCustomerTypingBanner.style.display = 'none';
+                        }
+                    }
+                });
+
+                // Conversation marked read
+                adminSocket.on('admin:conversation_read', function (data) {
+                    if (!data || !data.conversationId) return;
+                    var c = supportConversations.find(function (x) { return x.id === data.conversationId; });
+                    if (c) {
+                        c.unreadAdminCount = 0;
+                        renderSupportConversationList();
+                        updateSidebarSupportBadge();
+                    }
+                });
+            }
+
+            // Fetch conversations list from backend REST API
+            async function fetchSupportConversations() {
+                supportListLoading.style.display = 'block';
+                supportListError.style.display = 'none';
+                supportListEmpty.style.display = 'none';
+                supportConversationsUl.style.display = 'none';
+
+                var url = API_BASE + '/admin/support/conversations?limit=100';
+                if (supportSearchQuery) {
+                    url += '&search=' + encodeURIComponent(supportSearchQuery);
+                }
+
+                try {
+                    var res = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    if (res.status === 401) {
+                        localStorage.removeItem('assignmentghar_admin_token');
+                        localStorage.removeItem('assignmentghar_admin_user');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+
+                    var result = await res.json();
+                    if (res.ok && result.success) {
+                        supportConversations = result.data || [];
+                        renderSupportConversationList();
+                        updateSidebarSupportBadge();
+                        updateBulkDeleteUI();
+                    } else {
+                        supportListErrorMsg.textContent = result.message || 'Failed to load conversations.';
+                        supportListError.style.display = 'block';
+                    }
+                } catch (err) {
+                    console.error('Fetch live chat conversations error:', err);
+                    supportListErrorMsg.textContent = 'Network error fetching conversations.';
+                    supportListError.style.display = 'block';
+                } finally {
+                    supportListLoading.style.display = 'none';
+                }
+            }
+
+            // Render customer list: DISPLAY ONLY CUSTOMER NAME AND MOBILE NUMBER
+            function renderSupportConversationList() {
+                supportConversationsUl.innerHTML = '';
+
+                var filtered = getFilteredConversations();
+
+                if (filtered.length === 0) {
+                    supportListEmpty.style.display = 'block';
+                    supportConversationsUl.style.display = 'none';
+                    return;
+                }
+
+                supportListEmpty.style.display = 'none';
+                supportConversationsUl.style.display = 'block';
+
+                filtered.forEach(function (conv) {
+                    var li = document.createElement('li');
+                    var isActive = activeSupportConv && activeSupportConv.id === conv.id;
+                    var isChecked = selectedSupportConvIds.has(conv.id);
+
+                    li.className = 'admin-support-item' + (isActive ? ' active' : '');
+                    li.setAttribute('data-id', conv.id);
+
+                    // Customer display name and mobile number only
+                    var displayName = (conv.customerName && conv.customerName !== 'Visitor')
+                        ? conv.customerName
+                        : (conv.customerPhone ? ('Customer (' + conv.customerPhone + ')') : ('Customer #' + conv.id.slice(-6)));
+                    var phoneText = conv.customerPhone || 'No phone number';
+
+                    li.innerHTML = [
+                        '<div class="form-check mb-0 me-2" onclick="event.stopPropagation();">',
+                        '    <input class="form-check-input admin-conv-checkbox" type="checkbox" data-id="' + conv.id + '"' + (isChecked ? ' checked' : '') + ' style="cursor: pointer;">',
+                        '</div>',
+                        '<div class="admin-support-item-info">',
+                        '    <div class="admin-support-item-name">' + escapeSupportHtml(displayName) + '</div>',
+                        '    <div class="admin-support-item-phone">' + escapeSupportHtml(phoneText) + '</div>',
+                        '</div>'
+                    ].join('');
+
+                    var chk = li.querySelector('.admin-conv-checkbox');
+                    chk.addEventListener('change', function (e) {
+                        e.stopPropagation();
+                        if (chk.checked) {
+                            selectedSupportConvIds.add(conv.id);
+                        } else {
+                            selectedSupportConvIds.delete(conv.id);
+                        }
+                        updateBulkDeleteUI();
+                    });
+
+                    li.addEventListener('click', function () {
+                        selectSupportConversation(conv.id);
+                    });
+
+                    supportConversationsUl.appendChild(li);
+                });
+            }
+
+            // Select and display a conversation thread
+            async function selectSupportConversation(convId) {
+                var items = supportConversationsUl.querySelectorAll('.admin-support-item');
+                items.forEach(function (el) {
+                    if (el.getAttribute('data-id') === convId) {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                });
+
+                try {
+                    var res = await fetch(API_BASE + '/admin/support/conversations/' + convId, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+
+                    var result = await res.json();
+                    if (res.ok && result.success && result.data) {
+                        activeSupportConv = result.data;
+                        renderActiveThread(activeSupportConv);
+
+                        if (adminSocket && adminSocket.connected) {
+                            adminSocket.emit('admin:join_conversation', { conversationId: convId });
+                        }
+
+                        var localConv = supportConversations.find(function (c) { return c.id === convId; });
+                        if (localConv) {
+                            localConv.unreadAdminCount = 0;
+                            updateSidebarSupportBadge();
+                        }
+                    } else {
+                        showToast(result.message || 'Failed to load conversation details.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Error opening conversation:', err);
+                    showToast('Network error loading conversation.', 'danger');
+                }
+            }
+
+            function syncActiveConversationEndedState(isEnded) {
+                if (isEnded) {
+                    if (supportActiveStatusBadge) supportActiveStatusBadge.style.display = 'inline-block';
+                    if (supportBtnQuickResolve) {
+                        supportBtnQuickResolve.disabled = true;
+                        supportBtnQuickResolve.className = 'btn btn-sm btn-secondary';
+                        supportBtnQuickResolve.innerHTML = '<i class="bi bi-check2-all me-1"></i>Ended';
+                    }
+                    if (supportComposerContainer) supportComposerContainer.style.display = 'none';
+                    if (supportEndedBanner) supportEndedBanner.style.display = 'block';
+                    if (supportReplyTextarea) supportReplyTextarea.disabled = true;
+                    if (supportReplySendBtn) supportReplySendBtn.disabled = true;
+                } else {
+                    if (supportActiveStatusBadge) supportActiveStatusBadge.style.display = 'none';
+                    if (supportBtnQuickResolve) {
+                        supportBtnQuickResolve.disabled = false;
+                        supportBtnQuickResolve.className = 'btn btn-sm btn-outline-success';
+                        supportBtnQuickResolve.innerHTML = '<i class="bi bi-check2-circle me-1"></i>Resolve';
+                    }
+                    if (supportComposerContainer) supportComposerContainer.style.display = 'block';
+                    if (supportEndedBanner) supportEndedBanner.style.display = 'none';
+                    if (supportReplyTextarea) supportReplyTextarea.disabled = false;
+                }
+            }
+
+            // Render active thread header and messages (full details shown ONLY after opening)
+            function renderActiveThread(conv) {
+                supportThreadUnselected.style.display = 'none';
+                supportThreadActive.style.display = 'flex';
+
+                var displayName = (conv.customerName && conv.customerName !== 'Visitor')
+                    ? conv.customerName
+                    : (conv.customerPhone ? ('Customer (' + conv.customerPhone + ')') : ('Customer #' + conv.id.slice(-6)));
+                supportActiveName.textContent = displayName;
+
+                if (conv.customerPhone) {
+                    supportActivePhone.querySelector('.phone-val').textContent = conv.customerPhone;
+                    supportActivePhone.style.display = 'inline-flex';
+                } else {
+                    supportActivePhone.style.display = 'none';
+                }
+
+                if (conv.customerEmail) {
+                    supportActiveEmail.querySelector('.email-val').textContent = conv.customerEmail;
+                    supportActiveEmail.style.display = 'inline-flex';
+                } else {
+                    supportActiveEmail.style.display = 'none';
+                }
+
+                supportActiveId.querySelector('.id-val').textContent = conv.id.slice(0, 8);
+
+                var isEnded = conv.status === 'RESOLVED' || conv.status === 'CLOSED';
+                syncActiveConversationEndedState(isEnded);
+
+                // Render Messages
+                supportThreadMessages.innerHTML = '';
+                var msgs = conv.messages || [];
+                if (msgs.length === 0) {
+                    supportThreadMessages.innerHTML = '<div class="text-center py-5 text-muted small"><i class="bi bi-chat display-6 d-block mb-2"></i>No messages exchanged yet in this conversation.</div>';
+                } else {
+                    msgs.forEach(function (m) {
+                        appendAdminMessageBubble(m);
+                    });
+                }
+
+                scrollAdminThreadToBottom();
+                if (!isEnded && supportReplyTextarea) {
+                    supportReplyTextarea.focus();
+                }
+            }
+
+            // Append single message bubble to active thread
+            function appendAdminMessageBubble(msg) {
+                if (!supportThreadMessages) return;
+                var existing = document.getElementById('admin-bubble-' + msg.id);
+                if (existing) return;
+
+                var senderType = (msg.senderType || 'CUSTOMER').toUpperCase();
+                var row = document.createElement('div');
+                row.id = 'admin-bubble-' + msg.id;
+                row.className = 'admin-support-bubble-row ' + senderType.toLowerCase();
+
+                var timeStr = formatSupportTime(msg.createdAt);
+                var textBody = msg.text || msg.content || '';
+
+                if (senderType === 'SYSTEM') {
+                    row.innerHTML = '<div class="admin-support-bubble">' + escapeSupportHtml(textBody) + '</div>';
+                } else if (senderType === 'AGENT') {
+                    row.innerHTML = [
+                        '<div class="admin-support-bubble">' + escapeSupportHtml(textBody) + '</div>',
+                        '<div class="admin-support-meta-text"><i class="bi bi-check2-all text-success me-1"></i>Expert • ' + timeStr + '</div>'
+                    ].join('');
+                } else {
+                    // Customer
+                    var senderLabel = (msg.senderName && msg.senderName !== 'Visitor')
+                        ? msg.senderName
+                        : ((activeSupportConv && activeSupportConv.customerName && activeSupportConv.customerName !== 'Visitor')
+                            ? activeSupportConv.customerName
+                            : 'Customer');
+                    row.innerHTML = [
+                        '<div class="small fw-bold text-dark mb-1" style="font-size:0.75rem;"><i class="bi bi-person me-1"></i>' + escapeSupportHtml(senderLabel) + '</div>',
+                        '<div class="admin-support-bubble">' + escapeSupportHtml(textBody) + '</div>',
+                        '<div class="admin-support-meta-text">' + timeStr + '</div>'
+                    ].join('');
+                }
+
+                supportThreadMessages.appendChild(row);
+            }
+
+            function scrollAdminThreadToBottom() {
+                if (!supportThreadMessages) return;
+                setTimeout(function () {
+                    supportThreadMessages.scrollTop = supportThreadMessages.scrollHeight;
+                }, 30);
+            }
+
+            // Mark conversation read on backend
+            async function markAdminConversationRead(convId) {
+                try {
+                    await fetch(API_BASE + '/admin/support/conversations/' + convId + '/read', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                } catch (e) {}
+            }
+
+            // Send Agent Reply
+            async function sendAdminReply(e) {
+                if (e) e.preventDefault();
+                if (!activeSupportConv || !activeSupportConv.id) return;
+                if (activeSupportConv.status === 'RESOLVED' || activeSupportConv.status === 'CLOSED') {
+                    showToast('This conversation has ended. Further messages cannot be sent.', 'warning');
+                    return;
+                }
+
+                var text = (supportReplyTextarea.value || '').trim();
+                if (!text) return;
+
+                supportReplySendBtn.disabled = true;
+                var originalHtml = supportReplySendBtn.innerHTML;
+                supportReplySendBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+
+                if (adminSocket && adminSocket.connected) {
+                    adminSocket.emit('admin:message', {
+                        conversationId: activeSupportConv.id,
+                        text: text
+                    }, function (ack) {
+                        supportReplySendBtn.disabled = false;
+                        supportReplySendBtn.innerHTML = originalHtml;
+
+                        if (ack && ack.success && ack.message) {
+                            supportReplyTextarea.value = '';
+                            appendAdminMessageBubble(ack.message);
+                            scrollAdminThreadToBottom();
+                            emitAdminTyping(false);
+                        } else {
+                            sendAdminReplyHttp(activeSupportConv.id, text, originalHtml);
+                        }
+                    });
+                    return;
+                }
+
+                await sendAdminReplyHttp(activeSupportConv.id, text, originalHtml);
+            }
+
+            async function sendAdminReplyHttp(convId, text, originalHtml) {
+                try {
+                    var res = await fetch(API_BASE + '/admin/support/conversations/' + convId + '/messages', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ text: text })
+                    });
+
+                    var result = await res.json();
+                    if (res.ok && result.success && result.data && result.data.message) {
+                        supportReplyTextarea.value = '';
+                        appendAdminMessageBubble(result.data.message);
+                        scrollAdminThreadToBottom();
+                    } else {
+                        showToast(result.message || 'Failed to send reply.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Error sending expert reply:', err);
+                    showToast('Network error sending reply.', 'danger');
+                } finally {
+                    supportReplySendBtn.disabled = false;
+                    supportReplySendBtn.innerHTML = originalHtml;
+                }
+            }
+
+            // Resolve Conversation (Marks ended and prevents further messages)
+            async function resolveActiveConversation() {
+                if (!activeSupportConv || !activeSupportConv.id) return;
+                if (activeSupportConv.status === 'RESOLVED' || activeSupportConv.status === 'CLOSED') {
+                    return;
+                }
+
+                supportBtnQuickResolve.disabled = true;
+                var originalHtml = supportBtnQuickResolve.innerHTML;
+                supportBtnQuickResolve.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Resolving...';
+
+                try {
+                    var res = await fetch(API_BASE + '/admin/support/conversations/' + activeSupportConv.id + '/status', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ status: 'RESOLVED' })
+                    });
+
+                    var result = await res.json();
+                    if (res.ok && result.success) {
+                        activeSupportConv.status = 'RESOLVED';
+                        syncActiveConversationEndedState(true);
+                        showToast('Conversation resolved and marked as ended.', 'success');
+
+                        var c = supportConversations.find(function (x) { return x.id === activeSupportConv.id; });
+                        if (c) c.status = 'RESOLVED';
+                    } else {
+                        showToast(result.message || 'Failed to resolve conversation.', 'danger');
+                        supportBtnQuickResolve.disabled = false;
+                        supportBtnQuickResolve.innerHTML = originalHtml;
+                    }
+                } catch (err) {
+                    console.error('Resolve conversation error:', err);
+                    showToast('Network error resolving conversation.', 'danger');
+                    supportBtnQuickResolve.disabled = false;
+                    supportBtnQuickResolve.innerHTML = originalHtml;
+                }
+            }
+
+            // Admin typing
+            function emitAdminTyping(typing) {
+                if (!adminSocket || !adminSocket.connected || !activeSupportConv) return;
+                if (isAdminTyping === typing) return;
+                isAdminTyping = typing;
+                adminSocket.emit('admin:typing', {
+                    conversationId: activeSupportConv.id,
+                    isTyping: typing
+                });
+            }
+
+            // Bulk Delete Action
+            if (btnDeleteSelected) {
+                btnDeleteSelected.addEventListener('click', async function () {
+                    var ids = Array.from(selectedSupportConvIds);
+                    if (ids.length === 0) return;
+
+                    if (!confirm('Are you sure you want to delete ' + ids.length + ' selected conversation(s)? This action cannot be undone.')) {
+                        return;
+                    }
+
+                    btnDeleteSelected.disabled = true;
+                    var originalHtml = btnDeleteSelected.innerHTML;
+                    btnDeleteSelected.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Deleting...';
+
+                    try {
+                        var res = await fetch(API_BASE + '/admin/support/conversations', {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + token
+                            },
+                            body: JSON.stringify({ ids: ids })
+                        });
+
+                        var result = await res.json();
+                        if (res.ok && result.success) {
+                            var deletedSet = new Set(ids);
+                            supportConversations = supportConversations.filter(function (c) {
+                                return !deletedSet.has(c.id);
+                            });
+
+                            if (activeSupportConv && deletedSet.has(activeSupportConv.id)) {
+                                activeSupportConv = null;
+                                supportThreadActive.style.display = 'none';
+                                supportThreadUnselected.style.display = 'flex';
+                            }
+
+                            selectedSupportConvIds.clear();
+                            renderSupportConversationList();
+                            updateBulkDeleteUI();
+                            updateSidebarSupportBadge();
+                            showToast('Selected conversation(s) deleted successfully.', 'success');
+                        } else {
+                            showToast(result.message || 'Failed to delete conversations.', 'danger');
+                        }
+                    } catch (err) {
+                        console.error('Delete conversations error:', err);
+                        showToast('Network error deleting conversations.', 'danger');
+                    } finally {
+                        btnDeleteSelected.disabled = selectedSupportConvIds.size === 0;
+                        btnDeleteSelected.innerHTML = originalHtml;
+                        updateBulkDeleteUI();
+                    }
+                });
+            }
+
+            // Select All Checkbox
+            if (supportSelectAll) {
+                supportSelectAll.addEventListener('change', function () {
+                    var visible = getFilteredConversations();
+                    if (supportSelectAll.checked) {
+                        visible.forEach(function (c) { selectedSupportConvIds.add(c.id); });
+                    } else {
+                        visible.forEach(function (c) { selectedSupportConvIds.delete(c.id); });
+                    }
+                    renderSupportConversationList();
+                    updateBulkDeleteUI();
+                });
+            }
+
+            // Event Listeners for Live Chat Admin
+            btnRefreshSupport.addEventListener('click', function () {
+                fetchSupportConversations();
+            });
+
+            supportListRetryBtn.addEventListener('click', function () {
+                fetchSupportConversations();
+            });
+
+            supportSearchInput.addEventListener('input', function () {
+                supportSearchQuery = supportSearchInput.value.trim();
+                renderSupportConversationList();
+                updateBulkDeleteUI();
+            });
+
+            supportReplyForm.addEventListener('submit', sendAdminReply);
+
+            supportReplyTextarea.addEventListener('input', function () {
+                var len = supportReplyTextarea.value.trim().length;
+                supportReplySendBtn.disabled = len === 0;
+
+                emitAdminTyping(true);
+                clearTimeout(adminTypingTimer);
+                adminTypingTimer = setTimeout(function () {
+                    emitAdminTyping(false);
+                }, 2500);
+            });
+
+            supportReplyTextarea.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendAdminReply();
+                }
+            });
+
+            supportBtnQuickResolve.addEventListener('click', function () {
+                resolveActiveConversation();
+            });
+
+            // Initialize Support Inbox and Socket
+            initAdminSupportSocket();
+            fetchSupportConversations();
         });
     </script>
 </body>

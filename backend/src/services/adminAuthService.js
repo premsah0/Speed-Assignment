@@ -22,11 +22,7 @@ export const authenticateAdmin = async ({ email, password }) => {
     return null;
   }
 
-  const token = jwt.sign(
-    { id: admin.id, email: admin.email },
-    config.jwtSecret,
-    { expiresIn: '1d' }
-  );
+  const token = generateAdminToken({ id: admin.id, email: admin.email });
 
   return {
     token,
@@ -35,6 +31,16 @@ export const authenticateAdmin = async ({ email, password }) => {
       email: admin.email,
     },
   };
+};
+
+/**
+ * Generates JWT token for admin payload.
+ * @param {Object} payload - Admin identity payload (id, email).
+ * @param {string} [expiresIn='1d'] - Token duration.
+ * @returns {string} Signed JWT.
+ */
+export const generateAdminToken = (payload, expiresIn = '1d') => {
+  return jwt.sign(payload, config.jwtSecret, { expiresIn });
 };
 
 /**

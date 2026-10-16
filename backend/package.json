@@ -8,7 +8,8 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "seed:admin": "node src/scripts/seedAdmin.js",
-    "seed:services": "node src/scripts/seedServices.js"
+    "seed:services": "node src/scripts/seedServices.js",
+    "test:support": "node src/scripts/testSupportLive.js"
   },
   "keywords": [
     "assignmentghar",
@@ -31,10 +32,12 @@
     "morgan": "^1.12.1",
     "multer": "^2.4.0",
     "pg": "^8.23.0",
+    "socket.io": "^4.8.4",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
-    "prisma": "^7.10.0"
+    "prisma": "^7.10.0",
+    "socket.io-client": "^4.8.4"
   }
 }
